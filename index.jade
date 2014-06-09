@@ -1,0 +1,60 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    link(rel='stylesheet', href='css/main.css')
+
+  body
+
+    .newTask(style='display:none')
+      input(type='text',id='newTaskInput', placeholder='New Task...')
+
+
+    h1 Weekly Tasks
+    #container.container
+      
+      .container-left
+        .onDeck
+          p On Deck
+          ul
+
+
+        .backBurner
+          p Back Burner
+          ul
+            
+
+
+      .week
+        .day.monday
+          h2 Monday
+            ul 
+              li yo
+
+        .day.tuesday
+          h2 Tuesday
+            ul 
+              li yo
+
+        .day.wednesday
+          h2 Wednesday
+            ul 
+              li yo
+
+        .day.thursday
+          h2 Thursday
+            ul 
+              li yo
+
+        .day.friday
+          h2 Friday
+            ul 
+              li yo
+
+
+
+
+
+
+    script(src="js/lib/jquery.js")
+    script(src="js/app.js")
