@@ -27,6 +27,21 @@
 
   this.WM.Events = (function() {
     var getTaskInput, setTaskInput;
+    $('body').on('keypress', function() {
+      if (!clickStatus) {
+        return WM.View.showSearch();
+      }
+    });
+    $('body').on('keypress', function(e) {
+      if (e.keyCode === KEYCODE_ENTER) {
+        return WM.View.newTask();
+      }
+    });
+    $('body').on('keyup', function(e) {
+      if (e.keyCode === KEYCODE_ESC && searchStatus) {
+        return WM.View.hideSearch();
+      }
+    });
     getTaskInput = function() {
       return $taskInput.val();
     };
@@ -35,47 +50,38 @@
     };
   })();
 
-  this.WM.Events = (function() {
-    var hideSearch, showSearch;
-    $('body').on('keypress', function() {
-      log('keypress');
-      if (!clickStatus) {
-        return showSearch();
-      }
-    });
-    $('body').on('keypress', function(e) {
+  this.WM.View = (function() {
+    var hideSearch, newTask, showSearch;
+    newTask = function() {
       var addTaskDay, day, dayIndex, split, task;
-      if (e.keyCode === KEYCODE_ENTER) {
-        log('Add new task');
-        task = $taskInput.val();
-        split = task.split(':');
-        day = split[0].toLowerCase();
-        task = split[1];
-        dayIndex = daysArr.indexOf(day);
-        if (dayIndex >= 0) {
-          addTaskDay = '.' + daysArr[dayIndex];
-          $('.container').find(addTaskDay).find('ul').append("<li>" + task + "</li>");
-        }
-        return hideSearch();
+      task = $taskInput.val();
+      split = task.split(':');
+      day = split[0].toLowerCase();
+      task = split[1];
+      dayIndex = daysArr.indexOf(day);
+      if (dayIndex >= 0) {
+        addTaskDay = '.' + daysArr[dayIndex];
+        $('.container').find(addTaskDay).find('ul').append("<li>" + task + "</li>");
       }
-    });
-    $('body').on('keyup', function(e) {
-      if (e.keyCode === KEYCODE_ESC && searchStatus) {
-        return hideSearch();
-      }
-    });
+      return hideSearch();
+    };
     showSearch = function() {
       searchStatus = true;
       $taskInputWrapper.show();
       $taskInput.focus();
       return clickStatus = true;
     };
-    return hideSearch = function() {
+    hideSearch = function() {
       searchStatus = false;
       log('hide');
       $taskInputWrapper.hide();
       $taskInput.val('');
       return clickStatus = false;
+    };
+    return {
+      newTask: newTask,
+      showSearch: showSearch,
+      hideSearch: hideSearch
     };
   })();
 
