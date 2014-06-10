@@ -1,5 +1,5 @@
 (function() {
-  var $onDeck, $onDeckList, $taskInput, $taskInputWrapper, KEYCODE_ENTER, KEYCODE_ESC, clickStatus, daysArr, log, searchStatus, _ref;
+  var $onDeck, $onDeckList, $taskInput, $taskInputWrapper, KEYCODE_ENTER, KEYCODE_ESC, clickStatus, daysArr, log, searchStatus, today, weekday, _ref;
 
   log = function(m) {
     return console.log(m);
@@ -23,7 +23,19 @@
 
   $onDeckList = $('.onDeck ul');
 
-  daysArr = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'today', 'tomorrow', 'od', 'bb'];
+  today = '';
+
+  daysArr = ['mon', 'tue', 'wed', 'thur', 'fri', 'today', 'tomorrow', 'od', 'bb'];
+
+  weekday = {
+    '0': 'sun',
+    '1': 'mon',
+    '2': 'tue',
+    '3': 'wed',
+    '4': 'thur',
+    '5': 'frid',
+    '6': 'sat'
+  };
 
   this.WM.Events = (function() {
     var getTaskInput, setTaskInput;
@@ -50,18 +62,65 @@
     };
   })();
 
+  this.WM.Model = (function() {
+    var count, countDecr, countIncr, generateTaskID, getTask, getTime, init, setTask;
+    count = 0;
+    countIncr = function() {
+      return count++;
+    };
+    countDecr = function() {
+      return count--;
+    };
+    generateTaskID = function() {
+      return 'task_' + count;
+    };
+    getTask = function(model) {
+      return localStorage.getItem(model);
+    };
+    setTask = function(id, model) {
+      var date, taskObj;
+      date = getTime();
+      taskObj = {
+        'task': model,
+        'date': date
+      };
+      localStorage.setItem(id, JSON.stringify(taskObj));
+      return countIncr();
+    };
+    getTime = function() {
+      return new Date();
+    };
+    init = function() {
+      var day;
+      today = getTime();
+      day = today.getDay();
+      today = '.' + weekday[day];
+      return log(today);
+    };
+    return {
+      generateTaskID: generateTaskID,
+      setTask: setTask,
+      init: init
+    };
+  })();
+
+  WM.Model.init();
+
   this.WM.View = (function() {
     var hideSearch, newTask, showSearch;
     newTask = function() {
-      var addTaskDay, day, dayIndex, split, task;
-      task = $taskInput.val();
+      var addTaskDay, day, dayIndex, id, split, task;
+      task = ($taskInput.val()).trim();
       split = task.split(':');
       day = split[0].toLowerCase();
       task = split[1];
-      dayIndex = daysArr.indexOf(day);
+      log('dayIndex is:');
+      log(dayIndex = daysArr.indexOf(day));
       if (dayIndex >= 0) {
         addTaskDay = '.' + daysArr[dayIndex];
-        $('.container').find(addTaskDay).find('ul').append("<li>" + task + "</li>");
+        id = WM.Model.generateTaskID();
+        $('.container').find(addTaskDay).find('ul').append("<li id=" + id + "''>" + task + "</li>");
+        WM.Model.setTask(id, task);
       }
       return hideSearch();
     };

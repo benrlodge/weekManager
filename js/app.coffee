@@ -14,8 +14,17 @@ $taskInput = $('#newTaskInput')
 $onDeck = $('.onDeck')
 $onDeckList = $('.onDeck ul')
 
+today = ''
+daysArr = ['mon','tue','wed','thur','fri','today','tomorrow', 'od','bb']
+weekday = 
+	'0'	: 'sun'
+	'1'	: 'mon'
+	'2'	: 'tue'
+	'3'	: 'wed'
+	'4'	: 'thur'
+	'5'	: 'frid'
+	'6'	: 'sat'
 
-daysArr = ['monday','tuesday','wednesday','thursday','friday','today','tomorrow', 'od','bb']
 
 
 
@@ -34,24 +43,78 @@ daysArr = ['monday','tuesday','wednesday','thursday','friday','today','tomorrow'
 
 
 
+@WM.Model = do ->
+
+	count = 0
+
+	countIncr = -> count++
+	countDecr = -> count--
+	generateTaskID = -> 
+		return 'task_' + count
+
+	getTask = (model) ->
+		localStorage.getItem(model)
+
+	setTask = (id, model) ->
+		date = getTime()
+		taskObj = 
+			'task' : model
+			'date' : date
+		
+		localStorage.setItem(id, JSON.stringify(taskObj))
+		countIncr()
+
+
+	getTime = ->
+		new Date()
+		# dd = today.getDate()
+		# mm = today.getMonth()+1
+		# yyyy = today.getFullYear()
+		# return mm+'/'+dd+'/'+yyyy
+
+
+	init = ->
+		today = getTime()
+		day = today.getDay()
+		#store in global var
+		today = '.'+weekday[day]
+
+		log today
+
+
+	generateTaskID: generateTaskID
+	setTask: setTask
+	init: init
+
+
+WM.Model.init()
+
+
+
+
+
+
 @WM.View = do ->
 
 	newTask = ->
-		task = $taskInput.val()
+		task = ($taskInput.val()).trim()
 		split = task.split(':')			
 
 		day = split[0].toLowerCase()
 		task = split[1]
 		
-		dayIndex = daysArr.indexOf(day)
+		log 'dayIndex is:'
+		log dayIndex = daysArr.indexOf(day)
 
 		# If a day is chosen from weekday list
 		if dayIndex >= 0
-			addTaskDay = '.'+daysArr[dayIndex]
-		
-			# Add to week list
-			$('.container').find(addTaskDay).find('ul').append("<li>#{task}</li>")
 
+			addTaskDay = '.'+daysArr[dayIndex]
+
+			# Add to week list
+			id = WM.Model.generateTaskID()
+			$('.container').find(addTaskDay).find('ul').append("<li id=#{id}''>#{task}</li>")
+			WM.Model.setTask(id, task)
 
 		hideSearch()
 
