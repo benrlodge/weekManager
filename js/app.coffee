@@ -1,9 +1,8 @@
-log = (m) -> console.log m
+devmode = true
+log = (m) -> console.log m if devmode 
 
 @WM = @WM ? {}
 
-KEYCODE_ENTER = 13
-KEYCODE_ESC = 27
 
 clickStatus = false
 searchStatus = false
@@ -15,7 +14,40 @@ $onDeck = $('.onDeck')
 $onDeckList = $('.onDeck ul')
 
 today = ''
-daysArr = ['mon','tue','wed','thur','fri','today','tomorrow', 'od','bb']
+daysArr = [
+	'mon',
+	'tue',
+	'wed',
+	'thur',
+	'fri',
+	'today',
+	'tomorrow',
+	'od',
+	'bb',
+	'td'
+]
+
+
+keycodes =
+	enter 	: 13
+	esc 	: 27
+
+
+shortcodes = 
+	'mon' 		: '.mon'
+	'monday' 	: '.mon'
+	'tue' 		: '.tue'
+	'wed' 		: '.wed'
+	'thur'		: '.thur'
+	'fri'		: '.fri'
+	'today'		: '.today'
+	'td'		: '.today'
+	'tomorrow'	: '.tomorrow'
+	'tom'		: '.tomorrow'
+	'od'		: '.onDeck'
+	'bb'		: '.backburner'
+	
+
 weekday = 
 	'0'	: 'sun'
 	'1'	: 'mon'
@@ -32,8 +64,8 @@ weekday =
 @WM.Events = do ->
 
 	$('body').on 'keypress', ->  WM.View.showSearch()  if !clickStatus 
-	$('body').on 'keypress', (e) ->  WM.View.newTask() if e.keyCode is KEYCODE_ENTER
-	$('body').on 'keyup', (e) ->  WM.View.hideSearch() if e.keyCode is KEYCODE_ESC and searchStatus
+	$('body').on 'keypress', (e) ->  WM.View.newTask() if e.keyCode is keycodes.enter
+	$('body').on 'keyup', (e) ->  WM.View.hideSearch() if e.keyCode is keycodes.esc and searchStatus
 	
 	getTaskInput = -> $taskInput.val()
 	setTaskInput = (val) -> $taskInput(val)		
@@ -41,6 +73,23 @@ weekday =
 
 
 
+@WM.Sortable = do ->
+
+	config = ->
+		$( ".sortable" ).sortable({
+			connectWith: '.sortable'
+			})
+		$( ".sortable" ).disableSelection()
+
+	init = ->
+		log 'init this shit'
+		config()
+
+	init: init
+
+
+$ ->
+	WM.Sortable.init()
 
 
 @WM.Model = do ->

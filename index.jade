@@ -3,57 +3,92 @@ html(lang="en")
   head
     title= pageTitle
     link(rel='stylesheet', href='css/main.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Lato')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans:400,300')
+
 
   body
+
 
     .newTask(style='display:none')
       input(type='text',id='newTaskInput', placeholder='New Task...')
 
 
-    h1 Weekly Tasks
+    
     #container.container
       
+      .top-panel Oh Hi
+      
+
       .container-left
-        .onDeck
-          p On Deck
-          ul
+
+        header
+          h1 Weekly Tasks
+
+        nav
+          .item.onDeck.od
+            h3 On Deck
+            ul.sortable
+              li 
+                span Do a dance
+              li 
+                span Do a dance
+              li 
+                span Do a dance
 
 
-        .backBurner
-          p Back Burner
-          ul
+          .item.backBurner.bb
+            h3 Back Burner
+            ul.sortable
+              li 
+                span Do a dance
+              li 
+                span Do a dance
+              li 
+                span Do a dance
+              li 
+                span Do a dance
             
+
+
+
+
+
+      
 
 
       .week
         .day.mon
           h2 Monday
-            ul 
+          ul.sortable
 
 
         .day.tue
           h2 Tuesday
-            ul 
+          ul.sortable
+            li this is a task
+            li this is a task
+            li this is a task
+            li this is a task
 
 
         .day.wed
           h2 Wednesday
-            ul 
+          ul.sortable
 
 
         .day.thu
           h2 Thursday
-            ul 
+          ul.sortable
 
 
         .day.fri
           h2 Friday
-            ul 
-
-
-
+          ul.sortable
 
 
 
     script(src="js/lib/jquery.js")
+    script(src="js/lib/jquery-ui.js")
     script(src="js/app.js")
+

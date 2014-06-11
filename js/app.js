@@ -1,15 +1,15 @@
 (function() {
-  var $onDeck, $onDeckList, $taskInput, $taskInputWrapper, KEYCODE_ENTER, KEYCODE_ESC, clickStatus, daysArr, log, searchStatus, today, weekday, _ref;
+  var $onDeck, $onDeckList, $taskInput, $taskInputWrapper, clickStatus, daysArr, devmode, keycodes, log, searchStatus, shortcodes, today, weekday, _ref;
+
+  devmode = true;
 
   log = function(m) {
-    return console.log(m);
+    if (devmode) {
+      return console.log(m);
+    }
   };
 
   this.WM = (_ref = this.WM) != null ? _ref : {};
-
-  KEYCODE_ENTER = 13;
-
-  KEYCODE_ESC = 27;
 
   clickStatus = false;
 
@@ -25,7 +25,27 @@
 
   today = '';
 
-  daysArr = ['mon', 'tue', 'wed', 'thur', 'fri', 'today', 'tomorrow', 'od', 'bb'];
+  daysArr = ['mon', 'tue', 'wed', 'thur', 'fri', 'today', 'tomorrow', 'od', 'bb', 'td'];
+
+  keycodes = {
+    enter: 13,
+    esc: 27
+  };
+
+  shortcodes = {
+    'mon': '.mon',
+    'monday': '.mon',
+    'tue': '.tue',
+    'wed': '.wed',
+    'thur': '.thur',
+    'fri': '.fri',
+    'today': '.today',
+    'td': '.today',
+    'tomorrow': '.tomorrow',
+    'tom': '.tomorrow',
+    'od': '.onDeck',
+    'bb': '.backburner'
+  };
 
   weekday = {
     '0': 'sun',
@@ -45,12 +65,12 @@
       }
     });
     $('body').on('keypress', function(e) {
-      if (e.keyCode === KEYCODE_ENTER) {
+      if (e.keyCode === keycodes.enter) {
         return WM.View.newTask();
       }
     });
     $('body').on('keyup', function(e) {
-      if (e.keyCode === KEYCODE_ESC && searchStatus) {
+      if (e.keyCode === keycodes.esc && searchStatus) {
         return WM.View.hideSearch();
       }
     });
@@ -61,6 +81,27 @@
       return $taskInput(val);
     };
   })();
+
+  this.WM.Sortable = (function() {
+    var config, init;
+    config = function() {
+      $(".sortable").sortable({
+        connectWith: '.sortable'
+      });
+      return $(".sortable").disableSelection();
+    };
+    init = function() {
+      log('init this shit');
+      return config();
+    };
+    return {
+      init: init
+    };
+  })();
+
+  $(function() {
+    return WM.Sortable.init();
+  });
 
   this.WM.Model = (function() {
     var count, countDecr, countIncr, generateTaskID, getTask, getTime, init, setTask;
