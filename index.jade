@@ -42,35 +42,59 @@ html(lang="en")
 
 
 
+
       .week
-        .day.mon
-          h2 Monday
-          ul.sortable
+
+        <script type="text/template" id="week_template">
+        <div class='day mon'>
+        <h2> Monday </h2>
+        <ul class='sortable'>
+        {{#each allTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
+        </div>
 
 
-        .day.tue
-          h2 Tuesday
-          ul.sortable
+        <div class='day tue'>
+        <h2> Tuesday </h2>
+        <ul class='sortable'>
+        {{#each allTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
+        </div>
 
 
-        .day.wed
-          h2 Wednesday
-          ul.sortable
+        </script>
 
 
-        .day.thu
-          h2 Thursday
-          ul.sortable
 
 
-        .day.fri
-          h2 Friday
-          ul.sortable
+        //- .day.tue
+        //-   h2 Tuesday
+        //-   ul.sortable
+
+        //- .day.wed
+        //-   h2 Wednesday
+        //-   ul.sortable
+
+        //- .day.thu
+        //-   h2 Thursday
+        //-   ul.sortable
+
+        //- .day.fri
+        //-   h2 Friday
+        //-   ul.sortable
+
+
+
 
 
 
     script(src="js/lib/jquery.js")
     script(src="js/lib/jquery-ui.js")
+    script(src="js/lib/handlebars.js")
     script(src="/shared/underscore.js")
     script(src="/shared/backbone.js")
     script(src="js/app.js")

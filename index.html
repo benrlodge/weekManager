@@ -32,30 +32,29 @@
         </nav>
       </div>
       <div class="week">
-        <div class="day mon">
-          <h2>Monday</h2>
-          <ul class="sortable"></ul>
+        <script type="text/template" id="week_template">
+        <div class='day mon'>
+        <h2> Monday </h2>
+        <ul class='sortable'>
+        {{#each allTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
         </div>
-        <div class="day tue">
-          <h2>Tuesday</h2>
-          <ul class="sortable"></ul>
+        <div class='day tue'>
+        <h2> Tuesday </h2>
+        <ul class='sortable'>
+        {{#each allTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
         </div>
-        <div class="day wed">
-          <h2>Wednesday</h2>
-          <ul class="sortable"></ul>
-        </div>
-        <div class="day thu">
-          <h2>Thursday</h2>
-          <ul class="sortable"></ul>
-        </div>
-        <div class="day fri">
-          <h2>Friday</h2>
-          <ul class="sortable"></ul>
-        </div>
+        </script>
       </div>
     </div>
     <script src="js/lib/jquery.js"></script>
     <script src="js/lib/jquery-ui.js"></script>
+    <script src="js/lib/handlebars.js"></script>
     <script src="/shared/underscore.js"></script>
     <script src="/shared/backbone.js"></script>
     <script src="js/app.js"></script>

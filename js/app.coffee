@@ -5,10 +5,92 @@ log = (m) -> console.log m if devmode
 
 $ ->
 
-
-	keycodes =
+	KEYCODES =
 		enter 	: 13
 		esc 	: 27
+
+	DIRECTIVES = 
+		'Mon'		: '.mon'
+		'mon' 		: '.mon'
+		'monday' 	: '.mon'
+		'Tue'		: 'tue'
+		'tue' 		: '.tue'
+		'Wed'		: '.wed'
+		'wed' 		: '.wed'
+		'Thur'		: '.thur'
+		'thur'		: '.thur'
+		'Fri'		: '.fri'
+		'fri'		: '.fri'
+		'today'		: '.today'
+		'td'		: '.today'
+		'tomorrow'	: '.tomorrow'
+		'tom'		: '.tomorrow'
+		'od'		: '.onDeck'
+		'bb'		: '.backburner'
+
+
+
+
+
+	class Task extends Backbone.Model
+
+		defaults:
+			target: '.backBurner'
+			detail: 'empty'
+
+
+		initialize: -> 
+			_.bindAll(this, 'name_update')
+			# this.on "change:title", (model) -> @name_update()
+				
+		name_update: -> 
+			title = task.get("title")
+
+		complete_task: -> 
+			this.set({ complete: true })
+		
+		incomplete_task: -> 
+			this.set({ complete: false })
+
+		# set_task: (new_title) -> 
+		# 	this.set({ title: new_title  })
+
+		# get_task: ->
+		# 	this.get()
+
+
+
+
+	task = new Task
+
+
+
+
+	# http://mrbool.com/backbone-js-backbone-events/27796
+
+	class Tasks extends Backbone.Collection
+		model: Task
+
+		initialize: ->
+			log 'init the collectioonayy'
+			@on('add', @newTask, this)
+			@on('change', @change, this)
+
+
+		newTask: (model) ->
+			log 'i made me some collection!!!'
+			log 'welcome: ' + model.get('detail')
+			log model
+
+		change: (model) ->
+			log 'model has been changed'
+			
+
+	window.tasks = new Tasks
+
+
+
+
 
 
 	
@@ -26,20 +108,33 @@ $ ->
 		today 				: ''
 
 
-
 		initialize: ->
 			log 'i init the View'
-			@render()
 
-		render: ->
-			# template = _.template($("#tasks_template").html(), {})
-			# @$el.html template
+			@collection.on('add', @render, this)
+
+
+		template: Handlebars.compile( $("#week_template").html() )
+
+
+		render: () ->
+			log 'oh shitzels we gonna do some RENDERING!'
+
+		
+			log(@template({allTasks: @collection.toJSON()}))
+			$('.week').html(@template({allTasks: @collection.toJSON()}))
+			
+
+
+
+
+
 
 
 		events: ->
 			"keypress"	: 	"searchKeyPress"
 			"keyup"		:	"searchKeyUp"
-			
+
 
 		searchHide: ->
 			@searchStatus = false
@@ -47,63 +142,63 @@ $ ->
 			$(@taskInput).val('')
 			@clickStatus = false
 
-
 		searchShow: ->
 			@searchStatus = true
 			$(@taskInputWrapper).show()
 			$(@taskInput).focus()
 			@clickStatus = true
 
-
 		searchKeyPress: (key) ->
-			return @searchComplete() if key.keyCode is keycodes.enter
+			return @searchComplete() if key.keyCode is KEYCODES.enter
 			@searchShow()
 
-
 		searchKeyUp: (key) ->
-			if key.keyCode is keycodes.esc and @searchStatus
+			if key.keyCode is KEYCODES.esc and @searchStatus
 				@searchHide()
-
 
 		searchComplete: ->
 			task = ( $(@taskInput).val()	).trim()
-			directives = @searchDirectives()
+			task_info = @searchDirectives(task)
+			@addTask(task_info) 	
 			@searchHide()
-
-
-		searchDirectives: ->
-			log 'search directives'
-
-			# split = task.split(':')			
-			# day = split[0].toLowerCase()
-			# task = split[1]
 			
-			# log 'dayIndex is:'
-			# log dayIndex = daysArr.indexOf(day)
+		searchDirectives: (task) ->
+			split_task = task
+			task_split = task.split(":")
+			task_directive = task_split[0]
+			task_detail = task_split[1]
+			
+			_count = 0
 
-			# # If a day is chosen from weekday list
-			# if dayIndex >= 0
+			for k, v of DIRECTIVES
+				if k is task_directive
+					_count++
+					return{
+						directive: v
+						detail: task_detail
+					}
 
-			# 	addTaskDay = '.'+daysArr[dayIndex]
-
-			# 	# Add to week list
-			# 	id = WM.Model.generateTaskID()
-			# 	$('.container').find(addTaskDay).find('ul').append("<li id=#{id}''>#{task}</li>")
-			# 	WM.Model.setTask(id, task, day)
-
+			if _count is 0
+				return{
+					directive: '.backburner'
+					detail: task
+				}
 
 
-
-
-
-		addTask: (event) ->
-			task_text = $("#task_input").val()
-			log 'Im a gonna add me some ' + task_text
-			task = new Task({ title: task_text})
+		addTask: (obj) ->
+			dir = obj.directive
+			detail = obj.detail
+			
+			tasks.add({
+				target: obj.directive
+				detail: obj.detail
+			})
 			
 
 
-	Week_View = new Week_View
+
+
+	week_view = new Week_View({ collection: tasks })
 
 
 
@@ -111,40 +206,8 @@ $ ->
 
 
 
-	class Task extends Backbone.Model
-
-		defaults:
-			title: 'New task'
-			complete: false
-
-		initialize: -> 
-			_.bindAll(this, 'name_update')
-			this.on "change:title", (model) -> @name_update()
-				
-		name_update: -> 
-			title = task.get("title")
-			log "I updated my models title to: " + title
-
-		complete_task: -> 
-			this.set({ complete: true })
-		
-		incomplete_task: -> 
-			this.set({ complete: false })
-
-		set_task: (new_title) -> 
-			this.set({ title: new_title  })
 
 
-
-
-	task = new Task
-
-	class Tasks extends Backbone.Collection
-		model: Task
-
-		initialize: ->
-			log 'init the model'
-			
 
 
 
@@ -171,4 +234,23 @@ $ ->
 
 	# showAllTasks()
 
+
+
+
+
+# GOOD!
+# http://www.levihackwith.com/using-handlebars-each-blocks-with-backbone-collections-templates/
+
+
+
+
+
+# var friends = new Backbone.Collection([
+#   {name: "Athos",      job: "Musketeer"},
+#   {name: "Porthos",    job: "Musketeer"},
+#   {name: "Aramis",     job: "Musketeer"},
+#   {name: "d'Artagnan", job: "Guard"},
+# ]);
+
+# JSON.stringify( friends.where({job: "Musketeer"}) );
 

@@ -12,8 +12,6 @@ $taskInput = $('#newTaskInput')
 
 $onDeck = $('.onDeck')
 $onDeckList = $('.onDeck ul')
-
-
 today = ''
 daysArr = [
 	'mon',
@@ -57,8 +55,6 @@ weekday =
 	'4'	: 'thur'
 	'5'	: 'frid'
 	'6'	: 'sat'
-
-
 
 
 
@@ -155,7 +151,6 @@ WM.Model.init()
 	newTask = ->
 		task = ($taskInput.val()).trim()
 		split = task.split(':')			
-
 		day = split[0].toLowerCase()
 		task = split[1]
 		

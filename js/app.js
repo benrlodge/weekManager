@@ -12,17 +12,104 @@
   };
 
   $(function() {
-    var Task, Tasks, Week_View, keycodes, task, _ref, _ref1, _ref2;
-    keycodes = {
+    var DIRECTIVES, KEYCODES, Task, Tasks, Week_View, task, week_view, _ref, _ref1, _ref2;
+    KEYCODES = {
       enter: 13,
       esc: 27
     };
+    DIRECTIVES = {
+      'Mon': '.mon',
+      'mon': '.mon',
+      'monday': '.mon',
+      'Tue': 'tue',
+      'tue': '.tue',
+      'Wed': '.wed',
+      'wed': '.wed',
+      'Thur': '.thur',
+      'thur': '.thur',
+      'Fri': '.fri',
+      'fri': '.fri',
+      'today': '.today',
+      'td': '.today',
+      'tomorrow': '.tomorrow',
+      'tom': '.tomorrow',
+      'od': '.onDeck',
+      'bb': '.backburner'
+    };
+    Task = (function(_super) {
+      __extends(Task, _super);
+
+      function Task() {
+        _ref = Task.__super__.constructor.apply(this, arguments);
+        return _ref;
+      }
+
+      Task.prototype.defaults = {
+        target: '.backBurner',
+        detail: 'empty'
+      };
+
+      Task.prototype.initialize = function() {
+        return _.bindAll(this, 'name_update');
+      };
+
+      Task.prototype.name_update = function() {
+        var title;
+        return title = task.get("title");
+      };
+
+      Task.prototype.complete_task = function() {
+        return this.set({
+          complete: true
+        });
+      };
+
+      Task.prototype.incomplete_task = function() {
+        return this.set({
+          complete: false
+        });
+      };
+
+      return Task;
+
+    })(Backbone.Model);
+    task = new Task;
+    Tasks = (function(_super) {
+      __extends(Tasks, _super);
+
+      function Tasks() {
+        _ref1 = Tasks.__super__.constructor.apply(this, arguments);
+        return _ref1;
+      }
+
+      Tasks.prototype.model = Task;
+
+      Tasks.prototype.initialize = function() {
+        log('init the collectioonayy');
+        this.on('add', this.newTask, this);
+        return this.on('change', this.change, this);
+      };
+
+      Tasks.prototype.newTask = function(model) {
+        log('i made me some collection!!!');
+        log('welcome: ' + model.get('detail'));
+        return log(model);
+      };
+
+      Tasks.prototype.change = function(model) {
+        return log('model has been changed');
+      };
+
+      return Tasks;
+
+    })(Backbone.Collection);
+    window.tasks = new Tasks;
     Week_View = (function(_super) {
       __extends(Week_View, _super);
 
       function Week_View() {
-        _ref = Week_View.__super__.constructor.apply(this, arguments);
-        return _ref;
+        _ref2 = Week_View.__super__.constructor.apply(this, arguments);
+        return _ref2;
       }
 
       Week_View.prototype.el = $('body');
@@ -41,10 +128,20 @@
 
       Week_View.prototype.initialize = function() {
         log('i init the View');
-        return this.render();
+        return this.collection.on('add', this.render, this);
       };
 
-      Week_View.prototype.render = function() {};
+      Week_View.prototype.template = Handlebars.compile($("#week_template").html());
+
+      Week_View.prototype.render = function() {
+        log('oh shitzels we gonna do some RENDERING!');
+        log(this.template({
+          allTasks: this.collection.toJSON()
+        }));
+        return $('.week').html(this.template({
+          allTasks: this.collection.toJSON()
+        }));
+      };
 
       Week_View.prototype.events = function() {
         return {
@@ -68,107 +165,67 @@
       };
 
       Week_View.prototype.searchKeyPress = function(key) {
-        if (key.keyCode === keycodes.enter) {
+        if (key.keyCode === KEYCODES.enter) {
           return this.searchComplete();
         }
         return this.searchShow();
       };
 
       Week_View.prototype.searchKeyUp = function(key) {
-        if (key.keyCode === keycodes.esc && this.searchStatus) {
+        if (key.keyCode === KEYCODES.esc && this.searchStatus) {
           return this.searchHide();
         }
       };
 
       Week_View.prototype.searchComplete = function() {
-        var directives, task;
+        var task_info;
         task = ($(this.taskInput).val()).trim();
-        directives = this.searchDirectives();
+        task_info = this.searchDirectives(task);
+        this.addTask(task_info);
         return this.searchHide();
       };
 
-      Week_View.prototype.searchDirectives = function() {
-        return log('search directives');
+      Week_View.prototype.searchDirectives = function(task) {
+        var k, split_task, task_detail, task_directive, task_split, v, _count;
+        split_task = task;
+        task_split = task.split(":");
+        task_directive = task_split[0];
+        task_detail = task_split[1];
+        _count = 0;
+        for (k in DIRECTIVES) {
+          v = DIRECTIVES[k];
+          if (k === task_directive) {
+            _count++;
+            return {
+              directive: v,
+              detail: task_detail
+            };
+          }
+        }
+        if (_count === 0) {
+          return {
+            directive: '.backburner',
+            detail: task
+          };
+        }
       };
 
-      Week_View.prototype.addTask = function(event) {
-        var task, task_text;
-        task_text = $("#task_input").val();
-        log('Im a gonna add me some ' + task_text);
-        return task = new Task({
-          title: task_text
+      Week_View.prototype.addTask = function(obj) {
+        var detail, dir;
+        dir = obj.directive;
+        detail = obj.detail;
+        return tasks.add({
+          target: obj.directive,
+          detail: obj.detail
         });
       };
 
       return Week_View;
 
     })(Backbone.View);
-    Week_View = new Week_View;
-    Task = (function(_super) {
-      __extends(Task, _super);
-
-      function Task() {
-        _ref1 = Task.__super__.constructor.apply(this, arguments);
-        return _ref1;
-      }
-
-      Task.prototype.defaults = {
-        title: 'New task',
-        complete: false
-      };
-
-      Task.prototype.initialize = function() {
-        _.bindAll(this, 'name_update');
-        return this.on("change:title", function(model) {
-          return this.name_update();
-        });
-      };
-
-      Task.prototype.name_update = function() {
-        var title;
-        title = task.get("title");
-        return log("I updated my models title to: " + title);
-      };
-
-      Task.prototype.complete_task = function() {
-        return this.set({
-          complete: true
-        });
-      };
-
-      Task.prototype.incomplete_task = function() {
-        return this.set({
-          complete: false
-        });
-      };
-
-      Task.prototype.set_task = function(new_title) {
-        return this.set({
-          title: new_title
-        });
-      };
-
-      return Task;
-
-    })(Backbone.Model);
-    task = new Task;
-    return Tasks = (function(_super) {
-      __extends(Tasks, _super);
-
-      function Tasks() {
-        _ref2 = Tasks.__super__.constructor.apply(this, arguments);
-        return _ref2;
-      }
-
-      Tasks.prototype.model = Task;
-
-      Tasks.prototype.initialize = function() {
-        return log('init the model');
-      };
-
-      return Tasks;
-
-    })(Backbone.Collection);
+    return week_view = new Week_View({
+      collection: tasks
+    });
   });
 
 }).call(this);
