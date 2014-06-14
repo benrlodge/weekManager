@@ -54,7 +54,8 @@
       };
 
       Task.prototype.initialize = function() {
-        return _.bindAll(this, 'complete_task');
+        _.bindAll(this, 'complete_task');
+        return this.on('remove', this.destroy);
       };
 
       Task.prototype.name_update = function() {
@@ -80,6 +81,8 @@
         return _ref1;
       }
 
+      Tasks.prototype.url = '/';
+
       Tasks.prototype.model = Task;
 
       Tasks.prototype.localStorage = new Store("backbone-tasks");
@@ -87,6 +90,10 @@
       Tasks.prototype.initialize = function() {
         this.on('add', this.newTask, this);
         return this.on('change', this.change, this);
+      };
+
+      Tasks.prototype.removeTask = function(elements, options) {
+        return this.remove(elements, options);
       };
 
       Tasks.prototype.newTask = function(model) {
@@ -130,6 +137,7 @@
       Week_View.prototype.initialize = function() {
         log('Init View');
         this.collection.on('add', this.render, this);
+        this.collection.on('remove', this.render, this);
         return this.getLocalCollections();
       };
 
@@ -194,8 +202,23 @@
       Week_View.prototype.events = function() {
         return {
           "keypress": "searchKeyPress",
-          "keyup": "searchKeyUp"
+          "keyup": "searchKeyUp",
+          "click .delete": "deleteTask"
         };
+      };
+
+      Week_View.prototype.deleteTask = function(e) {
+        var _task, _taskId;
+        log('-----------------------');
+        log('delete this task');
+        _task = $(e.currentTarget);
+        _taskId = $(_task).data('id');
+        log(this.collection.get(_taskId));
+        log('full collection: ');
+        log(this.collection);
+        tasks.removeTask(_taskId);
+        log('new collection: ');
+        return log(this.collection);
       };
 
       Week_View.prototype.searchHide = function() {

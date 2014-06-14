@@ -45,6 +45,8 @@ $ ->
 
 		initialize: -> 
 			_.bindAll(this, 'complete_task')
+			@on 'remove', @destroy
+			
 				
 		name_update: -> 
 			title = task.get("title")
@@ -72,12 +74,22 @@ $ ->
 	# http://mrbool.com/backbone-js-backbone-events/27796
 
 	class Tasks extends Backbone.Collection
+		url: '/'
 		model: Task
 		localStorage: new Store("backbone-tasks")
 
 		initialize: ->
 			@on('add', @newTask, this)
 			@on('change', @change, this)
+
+
+
+		removeTask: (elements, options) ->
+			@remove(elements, options)
+
+	
+
+
 
 
 		newTask: (model) ->
@@ -88,6 +100,8 @@ $ ->
 			
 
 	tasks = new Tasks
+
+
 
 
 
@@ -118,7 +132,9 @@ $ ->
 		initialize: ->
 			log 'Init View'
 			@collection.on('add', @render, this)
+			@collection.on('remove', @render, this)
 			@getLocalCollections()
+
 
 
 
@@ -139,7 +155,6 @@ $ ->
 
 
 		render: () ->			
-
 
 			## Filters
 			## =============
@@ -183,8 +198,31 @@ $ ->
 
 
 		events: ->
-			"keypress"	: 	"searchKeyPress"
-			"keyup"		:	"searchKeyUp"
+			"keypress"			: 	"searchKeyPress"
+			"keyup"				:	"searchKeyUp"
+			"click .delete" 	:	"deleteTask"
+
+
+
+
+		deleteTask: (e) ->
+			log '-----------------------'
+			log 'delete this task'
+			_task = $(e.currentTarget)
+			_taskId = $(_task).data('id')
+
+			log @collection.get(_taskId)
+			
+			log 'full collection: '
+			log @collection
+			tasks.removeTask(_taskId)
+			log 'new collection: '
+			log @collection
+
+			
+			
+			
+
 
 		searchHide: ->
 			@searchStatus = false
