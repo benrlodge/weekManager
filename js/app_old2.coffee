@@ -108,7 +108,11 @@ $ ->
 		today 				: ''
 
 
-		template_week: Handlebars.compile( $("#template_week").html() )
+		template_monday: Handlebars.compile( $("#template_monday").html() )
+		template_tuesday: Handlebars.compile( $("#template_tuesday").html() )
+		template_wednesday: Handlebars.compile( $("#template_wednesday").html() )
+		template_thursday: Handlebars.compile( $("#template_thursday").html() )
+		template_friday: Handlebars.compile( $("#template_friday").html() )
 
 
 		initialize: ->
@@ -116,12 +120,14 @@ $ ->
 			@collection.on('add', @render, this)
 
 
-		render: () ->			
+		render: () ->
+			log 'Render View'
+			
 			monday =  @collection.where({ target: '.mon' })
-			tuesday =  @collection.where({ target: '.tue' })
-			wednesday =  @collection.where({ target: '.wed' })
-			thursday =  @collection.where({ target: '.thur' })
-			friday =  @collection.where({ target: '.fri' })
+			tuesday = @collection.where({ target: '.tue' })
+			wednesday = @collection.where({ target: '.wed' })
+			thursday = @collection.where({ target: '.thur' })
+			friday = @collection.where({ target: '.fri' })
 
 			mondayCollection  = new Tasks(monday)
 			tuesdayCollection = new Tasks(tuesday)
@@ -129,18 +135,12 @@ $ ->
 			thursdayCollection = new Tasks(thursday)
 			fridayCollection = new Tasks(friday)
 
+			$('.week .day.mon').html(@template_monday({allTasks: mondayCollection.toJSON()}))
+			$('.week .day.tue').html(@template_tuesday({allTasks: tuesdayCollection.toJSON()}))
+			$('.week .day.wed').html(@template_wednesday({allTasks: wednesdayCollection.toJSON()}))
+			$('.week .day.thur').html(@template_thursday({allTasks: thursdayCollection.toJSON()}))
+			$('.week .day.fri').html(@template_friday({allTasks: fridayCollection.toJSON()}))
 			
-			$('.week').html( @template_week({ 
-				allTasks: 	@collection.toJSON()
-				monTasks: 	mondayCollection.toJSON()
-				tueTasks: 	tuesdayCollection.toJSON()
-				wedTasks: 	wednesdayCollection.toJSON()
-				thurTasks: 	thursdayCollection.toJSON()
-				friTasks: 	fridayCollection.toJSON()
-				})
-			)
-
-
 
 
 		events: ->

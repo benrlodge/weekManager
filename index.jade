@@ -44,48 +44,61 @@ html(lang="en")
 
 
       .week
-
-        <script type="text/template" id="week_template">
+        <script type="text/template" id="template_week">
         <div class='day mon'>
         <h2> Monday </h2>
         <ul class='sortable'>
-        {{#each allTasks}}
+        {{#each monTasks }}
         <li> {{this.detail}} </li>
         {{/each}}
         </ul>
         </div>
-
 
         <div class='day tue'>
         <h2> Tuesday </h2>
         <ul class='sortable'>
-        {{#each allTasks}}
+        {{#each tueTasks}}
         <li> {{this.detail}} </li>
         {{/each}}
         </ul>
         </div>
 
+        <div class='day wed'>
+        <h2> Wednesday </h2>
+        <ul class='sortable'>
+        {{#each wedTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
+        </div>
 
+        <div class='day thur'>
+        <h2> Tnursday </h2>
+        <ul class='sortable'>
+        {{#each thurTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
+        </div>
+
+        <div class='day fri'>
+        <h2> Friday </h2>
+        <ul class='sortable'>
+        {{#each friTasks}}
+        <li> {{this.detail}} </li>
+        {{/each}}
+        </ul>
+        </div>
         </script>
 
 
 
+        
 
-        //- .day.tue
-        //-   h2 Tuesday
-        //-   ul.sortable
 
-        //- .day.wed
-        //-   h2 Wednesday
-        //-   ul.sortable
 
-        //- .day.thu
-        //-   h2 Thursday
-        //-   ul.sortable
 
-        //- .day.fri
-        //-   h2 Friday
-        //-   ul.sortable
+
 
 
 

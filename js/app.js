@@ -12,7 +12,7 @@
   };
 
   $(function() {
-    var DIRECTIVES, KEYCODES, Task, Tasks, Week_View, task, week_view, _ref, _ref1, _ref2;
+    var DIRECTIVES, KEYCODES, Task, Tasks, Week_View, task, tasks, week_view, _ref, _ref1, _ref2;
     KEYCODES = {
       enter: 13,
       esc: 27
@@ -103,7 +103,7 @@
       return Tasks;
 
     })(Backbone.Collection);
-    window.tasks = new Tasks;
+    tasks = new Tasks;
     Week_View = (function(_super) {
       __extends(Week_View, _super);
 
@@ -126,20 +126,42 @@
 
       Week_View.prototype.today = '';
 
+      Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
+
       Week_View.prototype.initialize = function() {
-        log('i init the View');
+        log('Init View');
         return this.collection.on('add', this.render, this);
       };
 
-      Week_View.prototype.template = Handlebars.compile($("#week_template").html());
-
       Week_View.prototype.render = function() {
-        log('oh shitzels we gonna do some RENDERING!');
-        log(this.template({
-          allTasks: this.collection.toJSON()
-        }));
-        return $('.week').html(this.template({
-          allTasks: this.collection.toJSON()
+        var friday, fridayCollection, monday, mondayCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
+        monday = this.collection.where({
+          target: '.mon'
+        });
+        tuesday = this.collection.where({
+          target: '.tue'
+        });
+        wednesday = this.collection.where({
+          target: '.wed'
+        });
+        thursday = this.collection.where({
+          target: '.thur'
+        });
+        friday = this.collection.where({
+          target: '.fri'
+        });
+        mondayCollection = new Tasks(monday);
+        tuesdayCollection = new Tasks(tuesday);
+        wednesdayCollection = new Tasks(wednesday);
+        thursdayCollection = new Tasks(thursday);
+        fridayCollection = new Tasks(friday);
+        return $('.week').html(this.template_week({
+          allTasks: this.collection.toJSON(),
+          monTasks: mondayCollection.toJSON(),
+          tueTasks: tuesdayCollection.toJSON(),
+          wedTasks: wednesdayCollection.toJSON(),
+          thurTasks: thursdayCollection.toJSON(),
+          friTasks: fridayCollection.toJSON()
         }));
       };
 
