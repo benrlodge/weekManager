@@ -7,72 +7,105 @@
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300">
   </head>
   <body>
+    
     <div style="display:none" class="newTask">
       <input type="text" id="newTaskInput" placeholder="New Task...">
     </div>
+    
+
     <div id="container" class="container">
+      
       <div class="top-panel">Oh Hi</div>
+    
       <div class="container-left">
+    
         <header>
           <h1>Weekly Tasks</h1>
         </header>
-        <nav>
-          <div class="item onDeck od">
-            <h3>On Deck</h3>
-            <ul class="sortable">
-              <li> <span>Nothing on deck</span></li>
-            </ul>
-          </div>
-          <div class="item backBurner bb">
-            <h3>Back Burner</h3>
-            <ul class="sortable">
-              <li> <span>Nothing on the backburner</span></li>
-            </ul>
-          </div>
+    
+        <nav id="sidebar">
+          <script type="text/template" id="template_sidebar">
+          
+              <div class="item onDeck od">
+                <h3>On Deck</h3>
+                <ul class="sortable">
+                  {{#each onDeckTasks}}
+                    <li> <span>{{ this.detail }}</span> </li>
+                  {{/each}}
+                </ul>
+              </div>
+        
+              <div class="item backBurner bb">
+                <h3>Back Burner</h3>
+                <ul class="sortable">
+                  {{#each backBurnerTasks}}
+                    <li> <span>{{ this.detail }}</span> </li>
+                  {{/each}}
+                </ul>
+              </div>
+          </script>
+
         </nav>
-      </div>
+    
+
+      </div> <!-- //container-left -->
+
+
+
+
       <div class="week">
         <script type="text/template" id="template_week">
+
         <div class='day mon'>
-        <h2> Monday </h2>
-        <ul class='sortable'>
-        {{#each monTasks }}
-        <li> {{this.detail}} </li>
-        {{/each}}
-        </ul>
+          <h2> Monday </h2>
+          <ul class='sortable'>
+            {{#each monTasks }}
+              <li> {{this.detail}} </li>
+            {{/each}}
+          </ul>
         </div>
+
+
         <div class='day tue'>
-        <h2> Tuesday </h2>
-        <ul class='sortable'>
-        {{#each tueTasks}}
-        <li> {{this.detail}} </li>
-        {{/each}}
-        </ul>
+          <h2> Tuesday </h2>
+          <ul class='sortable'>
+            {{#each tueTasks}}
+              <li> {{this.detail}} </li>
+            {{/each}}
+          </ul>
         </div>
+
+
         <div class='day wed'>
-        <h2> Wednesday </h2>
-        <ul class='sortable'>
-        {{#each wedTasks}}
-        <li> {{this.detail}} </li>
-        {{/each}}
-        </ul>
+          <h2> Wednesday </h2>
+          <ul class='sortable'>
+            {{#each wedTasks}}
+              <li> {{this.detail}} </li>
+            {{/each}}
+          </ul>
         </div>
+
+
         <div class='day thur'>
-        <h2> Tnursday </h2>
-        <ul class='sortable'>
-        {{#each thurTasks}}
-        <li> {{this.detail}} </li>
-        {{/each}}
+          <h2> Tnursday </h2>
+          <ul class='sortable'>
+            {{#each thurTasks}}
+              <li> {{this.detail}} </li>
+            {{/each}}
         </ul>
         </div>
+
+
         <div class='day fri'>
-        <h2> Friday </h2>
-        <ul class='sortable'>
-        {{#each friTasks}}
-        <li> {{this.detail}} </li>
-        {{/each}}
-        </ul>
+          <h2> Friday </h2>
+          <ul class='sortable'>
+            {{#each friTasks}}
+              <li> {{this.detail}} </li>
+            {{/each}}
+          </ul>
         </div>
+
+
         </script>
       </div>
     </div>
@@ -81,6 +114,7 @@
     <script src="js/lib/handlebars.js"></script>
     <script src="/shared/underscore.js"></script>
     <script src="/shared/backbone.js"></script>
+    <script src="js/lib/backbone.localStorage.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

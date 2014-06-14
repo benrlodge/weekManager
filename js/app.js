@@ -34,6 +34,9 @@
       'tomorrow': '.tomorrow',
       'tom': '.tomorrow',
       'od': '.onDeck',
+      'onDeck': '.onDeck',
+      'ondeck': '.onDeck',
+      'backburner': '.backburner',
       'bb': '.backburner'
     };
     Task = (function(_super) {
@@ -46,11 +49,12 @@
 
       Task.prototype.defaults = {
         target: '.backBurner',
-        detail: 'empty'
+        detail: 'empty',
+        complete: false
       };
 
       Task.prototype.initialize = function() {
-        return _.bindAll(this, 'name_update');
+        return _.bindAll(this, 'complete_task');
       };
 
       Task.prototype.name_update = function() {
@@ -61,12 +65,6 @@
       Task.prototype.complete_task = function() {
         return this.set({
           complete: true
-        });
-      };
-
-      Task.prototype.incomplete_task = function() {
-        return this.set({
-          complete: false
         });
       };
 
@@ -84,16 +82,15 @@
 
       Tasks.prototype.model = Task;
 
+      Tasks.prototype.localStorage = new Store("backbone-tasks");
+
       Tasks.prototype.initialize = function() {
-        log('init the collectioonayy');
         this.on('add', this.newTask, this);
         return this.on('change', this.change, this);
       };
 
       Tasks.prototype.newTask = function(model) {
-        log('i made me some collection!!!');
-        log('welcome: ' + model.get('detail'));
-        return log(model);
+        return log('new task model: ' + model.get('detail'));
       };
 
       Tasks.prototype.change = function(model) {
@@ -128,13 +125,36 @@
 
       Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
 
+      Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
+
       Week_View.prototype.initialize = function() {
         log('Init View');
-        return this.collection.on('add', this.render, this);
+        this.collection.on('add', this.render, this);
+        return this.getLocalCollections();
+      };
+
+      Week_View.prototype.getLocalCollections = function() {
+        var p, that;
+        that = this;
+        p = void 0;
+        console.log("fetching...");
+        p = this.collection.fetch();
+        return p.done(function() {
+          console.log("fetched!");
+          _.each(that.collection.models, (function(item) {
+            log(item);
+          }), that);
+        });
       };
 
       Week_View.prototype.render = function() {
-        var friday, fridayCollection, monday, mondayCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
+        var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
+        ondeck = this.collection.where({
+          target: '.onDeck'
+        });
+        backburner = this.collection.where({
+          target: '.backburner'
+        });
         monday = this.collection.where({
           target: '.mon'
         });
@@ -150,11 +170,17 @@
         friday = this.collection.where({
           target: '.fri'
         });
+        ondeckCollection = new Tasks(ondeck);
+        backburnerCollection = new Tasks(backburner);
         mondayCollection = new Tasks(monday);
         tuesdayCollection = new Tasks(tuesday);
         wednesdayCollection = new Tasks(wednesday);
         thursdayCollection = new Tasks(thursday);
         fridayCollection = new Tasks(friday);
+        $('#sidebar').html(this.template_sidebar({
+          onDeckTasks: ondeckCollection.toJSON(),
+          backBurnerTasks: backburnerCollection.toJSON()
+        }));
         return $('.week').html(this.template_week({
           allTasks: this.collection.toJSON(),
           monTasks: mondayCollection.toJSON(),
@@ -236,7 +262,7 @@
         var detail, dir;
         dir = obj.directive;
         detail = obj.detail;
-        return tasks.add({
+        return tasks.create({
           target: obj.directive,
           detail: obj.detail
         });

@@ -26,6 +26,9 @@ $ ->
 		'tomorrow'	: '.tomorrow'
 		'tom'		: '.tomorrow'
 		'od'		: '.onDeck'
+		'onDeck'	: '.onDeck'
+		'ondeck'	: '.onDeck'
+		'backburner': '.backburner'
 		'bb'		: '.backburner'
 
 
@@ -37,11 +40,11 @@ $ ->
 		defaults:
 			target: '.backBurner'
 			detail: 'empty'
+			complete: false
 
 
 		initialize: -> 
-			_.bindAll(this, 'name_update')
-			# this.on "change:title", (model) -> @name_update()
+			_.bindAll(this, 'complete_task')
 				
 		name_update: -> 
 			title = task.get("title")
@@ -49,8 +52,8 @@ $ ->
 		complete_task: -> 
 			this.set({ complete: true })
 		
-		incomplete_task: -> 
-			this.set({ complete: false })
+		# incomplete_task: -> 
+		# 	this.set({ complete: false })
 
 		# set_task: (new_title) -> 
 		# 	this.set({ title: new_title  })
@@ -70,17 +73,15 @@ $ ->
 
 	class Tasks extends Backbone.Collection
 		model: Task
+		localStorage: new Store("backbone-tasks")
 
 		initialize: ->
-			log 'init the collectioonayy'
 			@on('add', @newTask, this)
 			@on('change', @change, this)
 
 
 		newTask: (model) ->
-			log 'i made me some collection!!!'
-			log 'welcome: ' + model.get('detail')
-			log model
+			log 'new task model: ' + model.get('detail')
 
 		change: (model) ->
 			log 'model has been changed'
@@ -108,26 +109,64 @@ $ ->
 		today 				: ''
 
 
+		## Templates
+		## =============
 		template_week: Handlebars.compile( $("#template_week").html() )
-
+		template_sidebar: Handlebars.compile( $("#template_sidebar").html() )
+		
 
 		initialize: ->
 			log 'Init View'
 			@collection.on('add', @render, this)
+			@getLocalCollections()
+
+
+
+		getLocalCollections: ->
+			that = this
+			p = undefined
+			console.log "fetching..."
+			p = @collection.fetch()
+			p.done ->
+				console.log "fetched!"
+				_.each that.collection.models, ((item) ->
+					# that.renderApp item
+					log item
+					return
+				), that
+				return
+
 
 
 		render: () ->			
+
+
+			## Filters
+			## =============
+			ondeck =  @collection.where({ target: '.onDeck' })
+			backburner =  @collection.where({ target: '.backburner' })			
 			monday =  @collection.where({ target: '.mon' })
 			tuesday =  @collection.where({ target: '.tue' })
 			wednesday =  @collection.where({ target: '.wed' })
 			thursday =  @collection.where({ target: '.thur' })
 			friday =  @collection.where({ target: '.fri' })
 
+			## Collections
+			## =============
+			ondeckCollection = new Tasks(ondeck)
+			backburnerCollection = new Tasks(backburner)
 			mondayCollection  = new Tasks(monday)
 			tuesdayCollection = new Tasks(tuesday)
 			wednesdayCollection = new Tasks(wednesday)
 			thursdayCollection = new Tasks(thursday)
 			fridayCollection = new Tasks(friday)
+
+
+			$('#sidebar').html( @template_sidebar({
+				onDeckTasks: 		ondeckCollection.toJSON()
+				backBurnerTasks:	backburnerCollection.toJSON()
+				})
+			)
 
 			
 			$('.week').html( @template_week({ 
@@ -200,14 +239,13 @@ $ ->
 			dir = obj.directive
 			detail = obj.detail
 			
-			tasks.add({
+			tasks.create({
 				target: obj.directive
 				detail: obj.detail
 			})
-			
 
 
-
+		
 
 	week_view = new Week_View({ collection: tasks })
 
