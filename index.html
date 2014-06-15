@@ -8,14 +8,23 @@
   </head>
   <body>
     
+    
+    <!-- Modals and what not -->
     <div style="display:none" class="newTask">
       <input type="text" id="newTaskInput" placeholder="New Task...">
     </div>
+
+
+
+
     
 
     <div id="container" class="container">
       
-      <div class="top-panel">Oh Hi</div>
+      <div class="top-panel"> 
+        <div class='messages'></div>
+      </div>
+
     
       <div class="container-left">
     
@@ -30,7 +39,10 @@
                 <h3>On Deck</h3>
                 <ul class="sortable">
                   {{#each onDeckTasks}}
-                    <li> <span>{{ this.detail }}</span> </li>
+                    <li> 
+                      <span class='side-item'> {{this.detail}} 
+                        <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span>
+                      </span>
                   {{/each}}
                 </ul>
               </div>
@@ -39,7 +51,11 @@
                 <h3>Back Burner</h3>
                 <ul class="sortable">
                   {{#each backBurnerTasks}}
-                    <li> <span>{{ this.detail }}</span> </li>
+                    <li>
+                      <span class='side-item'> {{this.detail}} 
+                        <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span>
+                      </span>
+                    </li>
                   {{/each}}
                 </ul>
               </div>
@@ -99,7 +115,7 @@
         </script>
 
 
-        
+
       </div>
     </div>
     <script src="js/lib/jquery.js"></script>

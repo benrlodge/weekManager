@@ -1,5 +1,6 @@
 devmode = true
 log = (m) -> console.log m if devmode 
+delay = (ms, func) -> setTimeout func, ms
 
 
 
@@ -9,6 +10,8 @@ $ ->
 		enter 	: 13
 		esc 	: 27
 
+
+	## Shortcuts for keyboard inputs	
 	DIRECTIVES = 
 		'Mon'		: '.mon'
 		'mon' 		: '.mon'
@@ -44,26 +47,9 @@ $ ->
 
 
 		initialize: -> 
-			_.bindAll(this, 'complete_task')
 			@on 'remove', @destroy
-			
-				
-		name_update: -> 
-			title = task.get("title")
 
-		complete_task: -> 
-			this.set({ complete: true })
 		
-		# incomplete_task: -> 
-		# 	this.set({ complete: false })
-
-		# set_task: (new_title) -> 
-		# 	this.set({ title: new_title  })
-
-		# get_task: ->
-		# 	this.get()
-
-
 
 
 	task = new Task
@@ -78,29 +64,12 @@ $ ->
 		model: Task
 		localStorage: new Store("backbone-tasks")
 
-		initialize: ->
-			@on('add', @newTask, this)
-			@on('change', @change, this)
-
-
-
 		removeTask: (elements, options) ->
 			@remove(elements, options)
 
-	
-
-
-
-
-		newTask: (model) ->
-			log 'new task model: ' + model.get('detail')
-
-		change: (model) ->
-			log 'model has been changed'
 			
 
 	tasks = new Tasks
-
 
 
 
@@ -114,7 +83,9 @@ $ ->
 
 		el: $ 'body'
 
-		clickStatus: false
+		clickStatus: false		## For search bar keyboard controls
+		lastDeletedTask: ''		## For undo
+
 
 		taskInputWrapper 	: '.newTask'
 		taskInput 			: '#newTaskInput'
@@ -123,58 +94,62 @@ $ ->
 		today 				: ''
 
 
+		initialize: ->
+			log 'Init View'
+			@collection.on('add', @render, this)
+			@collection.on('remove', @render, this)
+			@fetchStoredCollections()
+
+
+		events: ->
+			"keypress" : "searchKeyPress"
+			"keyup"	: "searchKeyUp"
+			"click .delete" : "deleteTask"
+			"click a[data-action=undo]" : "undoTask"
+
+
 		## Templates
 		## =============
 		template_week: Handlebars.compile( $("#template_week").html() )
 		template_sidebar: Handlebars.compile( $("#template_sidebar").html() )
 		
 
-		initialize: ->
-			log 'Init View'
-			@collection.on('add', @render, this)
-			@collection.on('remove', @render, this)
-			@getLocalCollections()
 
 
-
-
-		getLocalCollections: ->
+		# Move to model?
+		fetchStoredCollections: ->
 			that = this
-			p = undefined
-			console.log "fetching..."
 			p = @collection.fetch()
 			p.done ->
-				console.log "fetched!"
 				_.each that.collection.models, ((item) ->
 					# that.renderApp item
-					log item
 					return
 				), that
 				return
 
 
 
-		render: () ->			
 
+		render: () ->			
 			## Filters
 			## =============
-			ondeck =  @collection.where({ target: '.onDeck' })
-			backburner =  @collection.where({ target: '.backburner' })			
-			monday =  @collection.where({ target: '.mon' })
-			tuesday =  @collection.where({ target: '.tue' })
-			wednesday =  @collection.where({ target: '.wed' })
-			thursday =  @collection.where({ target: '.thur' })
-			friday =  @collection.where({ target: '.fri' })
+			ondeck 		=  @collection.where({ target: '.onDeck' })
+			backburner 	=  @collection.where({ target: '.backburner' })			
+			monday 		=  @collection.where({ target: '.mon' })
+			tuesday 	=  @collection.where({ target: '.tue' })
+			wednesday 	=  @collection.where({ target: '.wed' })
+			thursday 	=  @collection.where({ target: '.thur' })
+			friday 		=  @collection.where({ target: '.fri' })
 
 			## Collections
 			## =============
-			ondeckCollection = new Tasks(ondeck)
-			backburnerCollection = new Tasks(backburner)
-			mondayCollection  = new Tasks(monday)
-			tuesdayCollection = new Tasks(tuesday)
-			wednesdayCollection = new Tasks(wednesday)
-			thursdayCollection = new Tasks(thursday)
-			fridayCollection = new Tasks(friday)
+			ondeckCollection 		= new Tasks(ondeck)
+			backburnerCollection 	= new Tasks(backburner)
+			mondayCollection  		= new Tasks(monday)
+			tuesdayCollection 		= new Tasks(tuesday)
+			wednesdayCollection 	= new Tasks(wednesday)
+			thursdayCollection 		= new Tasks(thursday)
+			fridayCollection 		= new Tasks(friday)
 
 
 			$('#sidebar').html( @template_sidebar({
@@ -196,33 +171,49 @@ $ ->
 
 
 
-
-		events: ->
-			"keypress"			: 	"searchKeyPress"
-			"keyup"				:	"searchKeyUp"
-			"click .delete" 	:	"deleteTask"
-
-
-
-
 		deleteTask: (e) ->
-			log '-----------------------'
-			log 'delete this task'
 			_task = $(e.currentTarget)
 			_taskId = $(_task).data('id')
-
-			log @collection.get(_taskId)
-			
-			log 'full collection: '
-			log @collection
+			@undoShow(_taskId)
+			@lastDeletedTask = @collection.get(_taskId)
 			tasks.removeTask(_taskId)
-			log 'new collection: '
-			log @collection
+
+		undoTask: (e) ->
+			tasks.create(@lastDeletedTask)
+			@messageClear()
+			
+		messageClear: ->
+			$('.messages').empty()
+
+		messageUpdate: (obj) ->
+			html = "<a href='#' data-id='#{obj.id}' data-action='#{obj.action}'>#{obj.message}</a>"
+			$('.messages').empty().append(html).addClass('show')
+
+			delay 5000, => @messageClear()
+
+
+
+
+		undoShow: (id) ->
+			obj = {
+				id: id
+				message: 'Undo'
+				action: 'undo'
+			}
+			@messageUpdate(obj)
+
+
+
+
+
+
+
 
 			
 			
 			
-
+		## Search
+		## ================================
 
 		searchHide: ->
 			@searchStatus = false
@@ -295,31 +286,6 @@ $ ->
 
 
 
-
-
-
-
-	# task1 = new Task({ title: 'Eat some peanuts'})
-	# task2 = new Task({ title: 'Do a dance'})
-	# task3 = new Task({ title: 'Sing a song'})
-
-	# myTasks = new Tasks([task1, task2, task3])
-
-
-
-	# myTasks.add({ title: 'blah doop' })
-
-	# log '-------------------------------'	
-
-	# log myTasks
-
-
-	# showAllTasks = ->
-	# 	myTasks.forEach (model) ->
-	# 		title = model.get("title")
-	# 		$('#list').append("<li>#{title}</li>")
-
-	# showAllTasks()
 
 
 

@@ -25,22 +25,31 @@ ul.sortable li:hover {
 }
 
 .top-panel {
-  padding: 15px;
+  padding: 0;
   position: fixed;
+  z-index: 2;
   left: 300px;
   width: 100%;
-  background-color: #474849;
-  border-left: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-  border-top: 1px solid rgba(0, 0, 0, 0.3);
   color: #999999;
-  text-shadow: 0px 1px 0px black;
+}
+.top-panel .messages {
+  opacity: 0;
+  padding: 10px 15px;
+}
+.top-panel .messages a {
+  padding: 15px;
+  color: #e5e5e5;
+}
+.top-panel .messages.show {
+  opacity: 1;
+  transition: 0.4s all;
 }
 
 .container-left {
   width: 300px;
   padding: 0;
   position: fixed;
+  z-index: 2;
   background: #353535;
   background-image: linear-gradient(#474849, #424244);
   height: 100%;
@@ -80,11 +89,12 @@ ul.sortable li:hover {
 .container-left nav .item ul li {
   background: #3c3c3c;
   padding: 0 13px;
+  position: relative;
 }
 .container-left nav .item ul li:last-child a {
   border-bottom: none;
 }
-.container-left nav .item ul li span {
+.container-left nav .item ul li .side-item {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: block;
@@ -96,14 +106,33 @@ ul.sortable li:hover {
   text-decoration: none;
   font-family: "Open Sans", sans-serif;
 }
-.container-left nav .item ul li span:first-child {
+.container-left nav .item ul li .side-item:first-child {
   border-top: none;
 }
 
+ul li .item-options {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+ul li .item-options:hover {
+  cursor: pointer;
+}
+ul li .side-item .item-options {
+  top: 5px;
+  right: 15px;
+}
+ul li:hover .item-options {
+  display: block;
+}
+
 .week {
+  position: relative;
+  z-index: 1;
   width: 1640px;
   margin-left: 325px;
-  padding-top: 80px;
+  padding-top: 45px;
 }
 .week .day {
   display: inline-block;
@@ -139,21 +168,21 @@ ul.sortable li:hover {
 .week .day ul li:first-child {
   margin-top: 10px;
 }
-.week .day ul li .item-options {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-.week .day ul li:hover .item-options {
-  display: block;
+
+.info-model {
+  position: fixed;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  background: white;
+  box-shadow: 0 1px 4px 3px rgba(80, 80, 80, 0.5);
 }
 
 .newTask {
   background: rgba(0, 0, 0, 0.6);
   position: fixed;
+  z-index: 3;
   top: 0;
-  left: 300px;
   width: 100%;
   height: 100%;
 }

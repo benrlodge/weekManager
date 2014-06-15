@@ -1,5 +1,5 @@
 (function() {
-  var devmode, log,
+  var delay, devmode, log,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -9,6 +9,10 @@
     if (devmode) {
       return console.log(m);
     }
+  };
+
+  delay = function(ms, func) {
+    return setTimeout(func, ms);
   };
 
   $(function() {
@@ -54,19 +58,7 @@
       };
 
       Task.prototype.initialize = function() {
-        _.bindAll(this, 'complete_task');
         return this.on('remove', this.destroy);
-      };
-
-      Task.prototype.name_update = function() {
-        var title;
-        return title = task.get("title");
-      };
-
-      Task.prototype.complete_task = function() {
-        return this.set({
-          complete: true
-        });
       };
 
       return Task;
@@ -87,21 +79,8 @@
 
       Tasks.prototype.localStorage = new Store("backbone-tasks");
 
-      Tasks.prototype.initialize = function() {
-        this.on('add', this.newTask, this);
-        return this.on('change', this.change, this);
-      };
-
       Tasks.prototype.removeTask = function(elements, options) {
         return this.remove(elements, options);
-      };
-
-      Tasks.prototype.newTask = function(model) {
-        return log('new task model: ' + model.get('detail'));
-      };
-
-      Tasks.prototype.change = function(model) {
-        return log('model has been changed');
       };
 
       return Tasks;
@@ -120,6 +99,8 @@
 
       Week_View.prototype.clickStatus = false;
 
+      Week_View.prototype.lastDeletedTask = '';
+
       Week_View.prototype.taskInputWrapper = '.newTask';
 
       Week_View.prototype.taskInput = '#newTaskInput';
@@ -130,28 +111,32 @@
 
       Week_View.prototype.today = '';
 
-      Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
-
-      Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
-
       Week_View.prototype.initialize = function() {
         log('Init View');
         this.collection.on('add', this.render, this);
         this.collection.on('remove', this.render, this);
-        return this.getLocalCollections();
+        return this.fetchStoredCollections();
       };
 
-      Week_View.prototype.getLocalCollections = function() {
+      Week_View.prototype.events = function() {
+        return {
+          "keypress": "searchKeyPress",
+          "keyup": "searchKeyUp",
+          "click .delete": "deleteTask",
+          "click a[data-action=undo]": "undoTask"
+        };
+      };
+
+      Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
+
+      Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
+
+      Week_View.prototype.fetchStoredCollections = function() {
         var p, that;
         that = this;
-        p = void 0;
-        console.log("fetching...");
         p = this.collection.fetch();
         return p.done(function() {
-          console.log("fetched!");
-          _.each(that.collection.models, (function(item) {
-            log(item);
-          }), that);
+          _.each(that.collection.models, (function(item) {}), that);
         });
       };
 
@@ -199,26 +184,42 @@
         }));
       };
 
-      Week_View.prototype.events = function() {
-        return {
-          "keypress": "searchKeyPress",
-          "keyup": "searchKeyUp",
-          "click .delete": "deleteTask"
-        };
-      };
-
       Week_View.prototype.deleteTask = function(e) {
         var _task, _taskId;
-        log('-----------------------');
-        log('delete this task');
         _task = $(e.currentTarget);
         _taskId = $(_task).data('id');
-        log(this.collection.get(_taskId));
-        log('full collection: ');
-        log(this.collection);
-        tasks.removeTask(_taskId);
-        log('new collection: ');
-        return log(this.collection);
+        this.undoShow(_taskId);
+        this.lastDeletedTask = this.collection.get(_taskId);
+        return tasks.removeTask(_taskId);
+      };
+
+      Week_View.prototype.undoTask = function(e) {
+        tasks.create(this.lastDeletedTask);
+        return this.messageClear();
+      };
+
+      Week_View.prototype.messageClear = function() {
+        return $('.messages').empty();
+      };
+
+      Week_View.prototype.messageUpdate = function(obj) {
+        var html,
+          _this = this;
+        html = "<a href='#' data-id='" + obj.id + "' data-action='" + obj.action + "'>" + obj.message + "</a>";
+        $('.messages').empty().append(html).addClass('show');
+        return delay(5000, function() {
+          return _this.messageClear();
+        });
+      };
+
+      Week_View.prototype.undoShow = function(id) {
+        var obj;
+        obj = {
+          id: id,
+          message: 'Undo',
+          action: 'undo'
+        };
+        return this.messageUpdate(obj);
       };
 
       Week_View.prototype.searchHide = function() {

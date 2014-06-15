@@ -30,16 +30,27 @@ ul
 
 
 .top-panel
-	padding: 15px
+	padding: 0
 	position: fixed
+	z-index: 2
 	left: 300px
 	width: 100%
-	background-color: #474849
-	border-left: 1px solid rgba(0, 0, 0, 0.2)
-	border-bottom: 1px solid rgba(0, 0, 0, 0.5)
-	border-top: 1px solid rgba(0, 0, 0, 0.3)
 	color: #999
-	text-shadow: 0px 1px 0px black
+	
+	.messages
+		opacity: 0
+		padding: 10px 15px
+		a
+			padding: 15px
+			color: #e5e5e5
+
+
+		&.show
+			opacity: 1
+			transition: .4s all
+
+
+
 
 
 
@@ -47,6 +58,7 @@ ul
 	width: 300px
 	padding: 0
 	position: fixed
+	z-index: 2
 	background: rgb(53,53,53)
 	background-image: linear-gradient(#474849, #424244)
 	height: 100%
@@ -67,6 +79,7 @@ ul
 
 
 	nav
+
 
 		.item
 			border-bottom: 1px solid rgba(0, 0, 0, 0.2)
@@ -92,13 +105,14 @@ ul
 				li
 					background: rgb(60,60,60)
 					padding: 0 13px
+					position: relative
 
 
 					&:last-child
 						a
 							border-bottom: none
 					
-					span
+					.side-item
 						border-bottom: 1px solid rgba(0, 0, 0, 0.2)
 						border-top: 1px solid rgba(255, 255, 255, 0.05)
 						display: block
@@ -112,15 +126,44 @@ ul
 
 						&:first-child
 							border-top: none
+
+
 						
+			
+
+
+//MOVE!!!
+
+// List Style
+ul
+	li
+		.item-options
+			display: none
+			position: absolute
+			right: 0
+			top: 0
+			&:hover
+				cursor: pointer
+
+		.side-item
+			.item-options
+				top: 5px
+				right: 15px
+
+		&:hover
+			.item-options
+				display: block
+
 
 
 
 
 .week
+	position: relative
+	z-index: 1
 	width: 1640px
 	margin-left: 325px
-	padding-top: 80px
+	padding-top: 45px
 
 
 
@@ -161,28 +204,25 @@ ul
 					margin-top: 10px
 
 
-				.item-options
-					display: none
-					position: absolute
-					right: 0
-					top: 0
-
-
-				&:hover
-					.item-options
-						display: block
 
 
 
 
+.info-model
+	position: fixed
+	z-index: 4
+	top: 50%
+	left: 50%
+	background: #fff
+	box-shadow: 0 1px 4px 3px rgba(80,80,80,.5)
 
 
 
 .newTask
 	background: rgba(0,0,0,.6)
 	position: fixed
+	z-index: 3
 	top: 0
-	left: 300px
 	width: 100%
 	height: 100%
 
