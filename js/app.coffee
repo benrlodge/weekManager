@@ -57,6 +57,7 @@ $ ->
 
 
 
+
 	# http://mrbool.com/backbone-js-backbone-events/27796
 
 	class Tasks extends Backbone.Collection
@@ -67,10 +68,10 @@ $ ->
 		removeTask: (elements, options) ->
 			@remove(elements, options)
 
+
 			
 
 	tasks = new Tasks
-
 
 
 
@@ -95,10 +96,12 @@ $ ->
 
 
 		initialize: ->
-			log 'Init View'
 			@collection.on('add', @render, this)
 			@collection.on('remove', @render, this)
-			@fetchStoredCollections()
+			@fetchStoredCollections()			
+			@virginCheck()
+			@sortablize()
+
 
 
 		events: ->
@@ -106,6 +109,8 @@ $ ->
 			"keyup"	: "searchKeyUp"
 			"click .delete" : "deleteTask"
 			"click a[data-action=undo]" : "undoTask"
+
+
 
 
 		## Templates
@@ -116,21 +121,8 @@ $ ->
 
 
 
-		# Move to model?
-		fetchStoredCollections: ->
-			that = this
-			p = @collection.fetch()
-			p.done ->
-				_.each that.collection.models, ((item) ->
-					# that.renderApp item
-					return
-				), that
-				return
+		render: () ->		
 
-
-
-
-		render: () ->			
 			## Filters
 			## =============
 			ondeck 		=  @collection.where({ target: '.onDeck' })
@@ -151,25 +143,25 @@ $ ->
 			thursdayCollection 		= new Tasks(thursday)
 			fridayCollection 		= new Tasks(friday)
 
-
-			$('#sidebar').html( @template_sidebar({
+			
+			$('#sidebar').html @template_sidebar
 				onDeckTasks: 		ondeckCollection.toJSON()
 				backBurnerTasks:	backburnerCollection.toJSON()
-				})
-			)
 
 			
-			$('.week').html( @template_week({ 
-				allTasks: 	@collection.toJSON()
+			$('.week').html @template_week
 				monTasks: 	mondayCollection.toJSON()
 				tueTasks: 	tuesdayCollection.toJSON()
 				wedTasks: 	wednesdayCollection.toJSON()
 				thurTasks: 	thursdayCollection.toJSON()
 				friTasks: 	fridayCollection.toJSON()
-				})
-			)
+			
+			@sortablize()
 
 
+
+		## Task Actions
+		## ==================================
 
 		deleteTask: (e) ->
 			_task = $(e.currentTarget)
@@ -182,17 +174,45 @@ $ ->
 			tasks.create(@lastDeletedTask)
 			@messageClear()
 			
+		addTask: (obj) ->
+			dir = obj.directive
+			detail = obj.detail
+
+			newTask = tasks.create
+				target: obj.directive
+				detail: obj.detail
+			,
+				success: (response) =>
+					@render()  ## Better way of doing? Need for getting id after save
+
+		
+
+
+		## Move to model?
+		## ===================================
+		fetchStoredCollections: ->
+			
+			p = @collection.fetch()
+			p.done =>
+				_.each @collection.models, ((item) ->
+					# that.renderApp item
+					return
+				), @
+				return
+
+
+
+
+		## Messages
+		## ====================================
+
 		messageClear: ->
 			$('.messages').empty()
 
 		messageUpdate: (obj) ->
 			html = "<a href='#' data-id='#{obj.id}' data-action='#{obj.action}'>#{obj.message}</a>"
 			$('.messages').empty().append(html).addClass('show')
-
 			delay 5000, => @messageClear()
-
-
-
 
 		undoShow: (id) ->
 			obj = {
@@ -206,7 +226,19 @@ $ ->
 
 
 
+		## Drag and Drop
+		## ================================
+		sortablize: ->
+			$('.sortable').sortable
+				connectWith: ".sortable"
 
+			$('.sortable').droppable
+				drop: =>
+					@updateOrder()
+    
+
+		updateOrder: ->
+			log 'update the order'
 
 
 			
@@ -264,14 +296,26 @@ $ ->
 				}
 
 
-		addTask: (obj) ->
-			dir = obj.directive
-			detail = obj.detail
-			
-			tasks.create({
-				target: obj.directive
-				detail: obj.detail
-			})
+
+		## Check if any tasks exist
+		## ==================================
+		virginCheck: ->
+			if @collection.size() is 0
+				tasks.create({
+					target: '.mon'
+					detail: 'I am a task for Monday!'
+				})				
+				@render()
+			else
+				return
+
+
+
+
+
+
+
+
 
 
 		
@@ -282,7 +326,8 @@ $ ->
 
 
 
-
+# Sortabe order
+# http://jsfiddle.net/7X4PX/4/
 
 
 

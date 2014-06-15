@@ -66,35 +66,35 @@ ul.sortable li:hover {
   font-size: 18px;
   font-weight: 100;
 }
-.container-left nav .item {
+.container-left nav .non-day {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-.container-left nav .item:first-of-type {
+.container-left nav .non-day:first-of-type {
   border-top: none;
 }
-.container-left nav .item h3 {
+.container-left nav .non-day h3 {
   margin: 0;
   color: #999999;
   text-shadow: 0px 1px 0px black;
   font-size: 16px;
   padding: 10px 0 10px 20px;
 }
-.container-left nav .item ul {
+.container-left nav .non-day ul {
   margin: 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
-.container-left nav .item ul li {
+.container-left nav .non-day ul li {
   background: #3c3c3c;
   padding: 0 13px;
   position: relative;
 }
-.container-left nav .item ul li:last-child a {
+.container-left nav .non-day ul li:last-child a {
   border-bottom: none;
 }
-.container-left nav .item ul li .side-item {
+.container-left nav .non-day ul li .side-item {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: block;
@@ -106,7 +106,7 @@ ul.sortable li:hover {
   text-decoration: none;
   font-family: "Open Sans", sans-serif;
 }
-.container-left nav .item ul li .side-item:first-child {
+.container-left nav .non-day ul li .side-item:first-child {
   border-top: none;
 }
 
@@ -159,11 +159,13 @@ ul li:hover .item-options {
   position: relative;
   margin-left: 30px;
   border-radius: 2px;
-  font-weight: 100;
-  list-style: none;
+  margin: 5px;
   padding: 5px 10px;
   border-bottom: 1px solid #dddddd;
-  margin: 5px;
+  background: white;
+  font-weight: 100;
+  list-style: none;
+  cursor: pointer;
 }
 .week .day ul li:first-child {
   margin-top: 10px;

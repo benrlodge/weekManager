@@ -112,10 +112,11 @@
       Week_View.prototype.today = '';
 
       Week_View.prototype.initialize = function() {
-        log('Init View');
         this.collection.on('add', this.render, this);
         this.collection.on('remove', this.render, this);
-        return this.fetchStoredCollections();
+        this.fetchStoredCollections();
+        this.virginCheck();
+        return this.sortablize();
       };
 
       Week_View.prototype.events = function() {
@@ -130,15 +131,6 @@
       Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
 
       Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
-
-      Week_View.prototype.fetchStoredCollections = function() {
-        var p, that;
-        that = this;
-        p = this.collection.fetch();
-        return p.done(function() {
-          _.each(that.collection.models, (function(item) {}), that);
-        });
-      };
 
       Week_View.prototype.render = function() {
         var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
@@ -174,14 +166,14 @@
           onDeckTasks: ondeckCollection.toJSON(),
           backBurnerTasks: backburnerCollection.toJSON()
         }));
-        return $('.week').html(this.template_week({
-          allTasks: this.collection.toJSON(),
+        $('.week').html(this.template_week({
           monTasks: mondayCollection.toJSON(),
           tueTasks: tuesdayCollection.toJSON(),
           wedTasks: wednesdayCollection.toJSON(),
           thurTasks: thursdayCollection.toJSON(),
           friTasks: fridayCollection.toJSON()
         }));
+        return this.sortablize();
       };
 
       Week_View.prototype.deleteTask = function(e) {
@@ -196,6 +188,30 @@
       Week_View.prototype.undoTask = function(e) {
         tasks.create(this.lastDeletedTask);
         return this.messageClear();
+      };
+
+      Week_View.prototype.addTask = function(obj) {
+        var detail, dir, newTask,
+          _this = this;
+        dir = obj.directive;
+        detail = obj.detail;
+        return newTask = tasks.create({
+          target: obj.directive,
+          detail: obj.detail
+        }, {
+          success: function(response) {
+            return _this.render();
+          }
+        });
+      };
+
+      Week_View.prototype.fetchStoredCollections = function() {
+        var p,
+          _this = this;
+        p = this.collection.fetch();
+        return p.done(function() {
+          _.each(_this.collection.models, (function(item) {}), _this);
+        });
       };
 
       Week_View.prototype.messageClear = function() {
@@ -220,6 +236,22 @@
           action: 'undo'
         };
         return this.messageUpdate(obj);
+      };
+
+      Week_View.prototype.sortablize = function() {
+        var _this = this;
+        $('.sortable').sortable({
+          connectWith: ".sortable"
+        });
+        return $('.sortable').droppable({
+          drop: function() {
+            return _this.updateOrder();
+          }
+        });
+      };
+
+      Week_View.prototype.updateOrder = function() {
+        return log('update the order');
       };
 
       Week_View.prototype.searchHide = function() {
@@ -282,14 +314,16 @@
         }
       };
 
-      Week_View.prototype.addTask = function(obj) {
-        var detail, dir;
-        dir = obj.directive;
-        detail = obj.detail;
-        return tasks.create({
-          target: obj.directive,
-          detail: obj.detail
-        });
+      Week_View.prototype.virginCheck = function() {
+        if (this.collection.size() === 0) {
+          tasks.create({
+            target: '.mon',
+            detail: 'I am a task for Monday!'
+          });
+          return this.render();
+        } else {
+
+        }
       };
 
       return Week_View;

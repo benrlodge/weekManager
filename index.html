@@ -35,7 +35,7 @@
         <nav id="sidebar">
           <script type="text/template" id="template_sidebar">
           
-              <div class="item onDeck od">
+              <div class="non-day onDeck od task-list">
                 <h3>On Deck</h3>
                 <ul class="sortable">
                   {{#each onDeckTasks}}
@@ -47,7 +47,7 @@
                 </ul>
               </div>
         
-              <div class="item backBurner bb">
+              <div class="non-day backBurner bb task-list">
                 <h3>Back Burner</h3>
                 <ul class="sortable">
                   {{#each backBurnerTasks}}
@@ -72,7 +72,7 @@
       <div class="week">
         <script type="text/template" id="template_week">
 
-        <div class='day mon'>
+        <div class='day mon task-list'>
           <h2> Monday </h2>
           <ul class='sortable'>
             {{#each monTasks }}
@@ -80,7 +80,7 @@
             {{/each}}
           </ul>
         </div>
-        <div class='day tue'>
+        <div class='day tue task-list'>
           <h2> Tuesday </h2>
           <ul class='sortable'>
             {{#each tueTasks }}
@@ -88,7 +88,7 @@
             {{/each}}
           </ul>
         </div>
-        <div class='day we'>
+        <div class='day wed task-list'>
           <h2> Wednesday </h2>
           <ul class='sortable'>
             {{#each wedTasks }}
@@ -96,7 +96,7 @@
             {{/each}}
           </ul>
         </div>
-        <div class='day thur'>
+        <div class='day thur task-list'>
           <h2> Thursday </h2>
           <ul class='sortable'>
             {{#each thurTasks }}
@@ -104,7 +104,7 @@
             {{/each}}
           </ul>
         </div>
-        <div class='day fri'>
+        <div class='day fri task-list'>
           <h2> Friday </h2>
           <ul class='sortable'>
             {{#each friTasks }}
