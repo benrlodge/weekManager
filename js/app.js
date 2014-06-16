@@ -54,6 +54,7 @@
       Task.prototype.defaults = {
         target: '.backBurner',
         detail: 'empty',
+        order: '',
         complete: false
       };
 
@@ -173,7 +174,8 @@
           thurTasks: thursdayCollection.toJSON(),
           friTasks: fridayCollection.toJSON()
         }));
-        return this.sortablize();
+        this.sortablize();
+        return log(this.collection);
       };
 
       Week_View.prototype.deleteTask = function(e) {
@@ -223,7 +225,7 @@
           _this = this;
         html = "<a href='#' data-id='" + obj.id + "' data-action='" + obj.action + "'>" + obj.message + "</a>";
         $('.messages').empty().append(html).addClass('show');
-        return delay(5000, function() {
+        return delay(6000, function() {
           return _this.messageClear();
         });
       };
@@ -318,7 +320,8 @@
         if (this.collection.size() === 0) {
           tasks.create({
             target: '.mon',
-            detail: 'I am a task for Monday!'
+            detail: 'I am a task for Monday!',
+            order: 0
           });
           return this.render();
         } else {

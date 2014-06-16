@@ -43,6 +43,7 @@ $ ->
 		defaults:
 			target: '.backBurner'
 			detail: 'empty'
+			order: ''
 			complete: false
 
 
@@ -121,6 +122,8 @@ $ ->
 
 
 
+
+
 		render: () ->		
 
 			## Filters
@@ -157,6 +160,7 @@ $ ->
 				friTasks: 	fridayCollection.toJSON()
 			
 			@sortablize()
+			log @collection
 
 
 
@@ -212,7 +216,7 @@ $ ->
 		messageUpdate: (obj) ->
 			html = "<a href='#' data-id='#{obj.id}' data-action='#{obj.action}'>#{obj.message}</a>"
 			$('.messages').empty().append(html).addClass('show')
-			delay 5000, => @messageClear()
+			delay 6000, => @messageClear()
 
 		undoShow: (id) ->
 			obj = {
@@ -304,6 +308,7 @@ $ ->
 				tasks.create({
 					target: '.mon'
 					detail: 'I am a task for Monday!'
+					order: 0
 				})				
 				@render()
 			else
