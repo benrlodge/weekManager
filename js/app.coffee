@@ -203,9 +203,7 @@ $ ->
 		addTask: (obj) ->
 			dir = obj.directive
 			detail = obj.detail
-			obj.order = $(dir).find('li').length
-
-
+			obj.order = $(dir).find('li').length ## BETTER TO LOOK THIS UP DIRECTLY IN COLLECTION?? THIS SEEMS FASTER
 
 			newTask = tasks.create
 				target: obj.directive
