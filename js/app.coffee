@@ -121,7 +121,10 @@ $ ->
 		template_sidebar: Handlebars.compile( $("#template_sidebar").html() )
 		
 
-
+		## Helpers
+		## =============
+		sortAndFilterDay = (collection, day, sortby) ->
+			_( collection.where({ target: day }) ).sortBy (t) -> t.get(sortby)
 
 
 
@@ -131,18 +134,11 @@ $ ->
 			## =============
 			ondeck 		=  @collection.where({ target: '#onDeck' })
 			backburner 	=  @collection.where({ target: '#backburner' })			
-			monday 		=  @collection.where({ target: '#day-mon' })
-			
-
-			## WORKS BUT THEN DONT HAVE WHERE FILTER
-			# mondaySorted =  @collection.sortBy (t) -> t.get('order')
-			# log 'monday SORTED------------------------------'
-			# log mondaySorted
-
-			tuesday 	=  @collection.where({ target: '#day-tue' })
-			wednesday 	=  @collection.where({ target: '#day-wed' })
-			thursday 	=  @collection.where({ target: '#day-thur' })
-			friday 		=  @collection.where({ target: '#day-fri' })
+			monday 		= sortAndFilterDay(@collection, '#day-mon','order')
+			tuesday 	= sortAndFilterDay(@collection, '#day-tue','order')
+			wednesday 	= sortAndFilterDay(@collection, '#day-wed','order')
+			thursday 	= sortAndFilterDay(@collection, '#day-thur','order')
+			friday 		= sortAndFilterDay(@collection, '#day-fri','order')
 
 		
 			## Collections
