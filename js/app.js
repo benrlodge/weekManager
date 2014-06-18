@@ -19,6 +19,15 @@
     return setTimeout(func, ms);
   };
 
+  /*
+  	
+  	To Do:
+  
+  	 - Move tasks to different days, draggable and typing
+  	 - Add "header" option
+  */
+
+
   $(function() {
     var DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, router, tasks, week_view, _ref, _ref1, _ref2, _ref3;
     KEYCODES = {
@@ -88,7 +97,7 @@
     })(Backbone.Collection);
     tasks = new Tasks;
     Week_View = (function(_super) {
-      var sortAndFilterDay;
+      var cmp;
 
       __extends(Week_View, _super);
 
@@ -134,23 +143,41 @@
 
       Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
 
-      sortAndFilterDay = function(collection, day, sortby) {
-        return _(collection.where({
-          target: day
-        })).sortBy(function(t) {
-          return t.get(sortby);
-        });
+      cmp = function(a, b) {
+        var _ref3;
+        _ref3 = [a.get('order'), b.get('order')], a = _ref3[0], b = _ref3[1];
+        if (a > b) {
+          return 1;
+        }
+        if (a < b) {
+          return -1;
+        }
+        return 0;
       };
 
       Week_View.prototype.render = function() {
         var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
-        ondeck = sortAndFilterDay(this.collection, '#onDeck', 'order');
-        backburner = sortAndFilterDay(this.collection, '#backburner', 'order');
-        monday = sortAndFilterDay(this.collection, '#day-mon', 'order');
-        tuesday = sortAndFilterDay(this.collection, '#day-tue', 'order');
-        wednesday = sortAndFilterDay(this.collection, '#day-wed', 'order');
-        thursday = sortAndFilterDay(this.collection, '#day-thur', 'order');
-        friday = sortAndFilterDay(this.collection, '#day-fri', 'order');
+        ondeck = this.collection.where({
+          target: '#onDeck'
+        }).sort(cmp);
+        backburner = this.collection.where({
+          target: '#backburner'
+        }).sort(cmp);
+        monday = this.collection.where({
+          target: '#day-mon'
+        }).sort(cmp);
+        tuesday = this.collection.where({
+          target: '#day-tue'
+        }).sort(cmp);
+        wednesday = this.collection.where({
+          target: '#day-wed'
+        }).sort(cmp);
+        thursday = this.collection.where({
+          target: '#day-thur'
+        }).sort(cmp);
+        friday = this.collection.where({
+          target: '#day-fri'
+        }).sort(cmp);
         ondeckCollection = new Tasks(ondeck);
         backburnerCollection = new Tasks(backburner);
         mondayCollection = new Tasks(monday);
@@ -252,13 +279,17 @@
         return $('.task-list').each(function() {
           var list;
           return list = $(this).find('.sortable li').each(function(index) {
-            var _id, _item, _order, _task;
+            var _id, _item, _order, _target, _task;
             _task = $(this).find('.item-detail').text();
             _id = $(this).data('id');
             _order = Number(index);
+            _target = '#' + $(this).closest('.task-list').attr('id');
+            log('targt:');
+            log(_target);
             _item = tasks.get(_id);
             return _item.save({
-              order: _order
+              order: _order,
+              target: _target
             });
           });
         });

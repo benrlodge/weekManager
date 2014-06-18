@@ -4,6 +4,17 @@ window.clearLocal = -> localStorage.clear()
 delay = (ms, func) -> setTimeout func, ms
 
 
+###
+	
+	To Do:
+
+	 - Move tasks to different days, draggable and typing
+	 - Add "header" option
+
+
+
+###
+
 
 $ ->
 
@@ -100,11 +111,6 @@ $ ->
 			@virginCheck()
 			@sortablize()
 
-			# log 'STARTING COLLECTION'
-			# log @collection.each (index) ->
-			# 	log index.attributes
-
-
 
 		events: ->
 			"keypress" : "searchKeyPress"
@@ -123,17 +129,16 @@ $ ->
 
 		## Helpers
 		## =============
-		sortAndFilterDay = (collection, day, sortby) ->
-			_( collection.where({ target: day }) ).sortBy (t) -> t.get(sortby)
+		# sortAndFilterDay = (collection, day, sortby) ->
+		# 	_( collection.where({ target: day }) ).sortBy (t) -> t.get(sortby)
 
 		
-		# cmp = (a, b) ->
-		# 	[ a, b ] = [ a.get('order'), b.get('order') ]
-		# 	return  1 if(a > b)
-		# 	return -1 if(a < b)
-		# 	return  0
+		cmp = (a, b) ->
+			[ a, b ] = [ a.get('order'), b.get('order') ]
+			return  1 if(a > b)
+			return -1 if(a < b)
+			return  0
 		# @collection.where(target: '#day-mon').sort(cmp)
-
 
 
 
@@ -141,15 +146,14 @@ $ ->
 
 			## Filters
 			## =============
-			ondeck 		= sortAndFilterDay(@collection, '#onDeck','order')
-			backburner 	= sortAndFilterDay(@collection, '#backburner','order')			
+			ondeck 		= @collection.where({target: '#onDeck'}).sort(cmp)
+			backburner 	= @collection.where({target: '#backburner'}).sort(cmp)
+			monday 		= @collection.where({target: '#day-mon'}).sort(cmp)
+			tuesday 	= @collection.where({target: '#day-tue'}).sort(cmp)
+			wednesday 	= @collection.where({target: '#day-wed'}).sort(cmp)
+			thursday 	= @collection.where({target: '#day-thur'}).sort(cmp)
+			friday 		= @collection.where({target: '#day-fri'}).sort(cmp)
 
-
-			monday 		= sortAndFilterDay(@collection, '#day-mon','order')
-			tuesday 	= sortAndFilterDay(@collection, '#day-tue','order')
-			wednesday 	= sortAndFilterDay(@collection, '#day-wed','order')
-			thursday 	= sortAndFilterDay(@collection, '#day-thur','order')
-			friday 		= sortAndFilterDay(@collection, '#day-fri','order')
 
 		
 			## Collections
@@ -263,17 +267,32 @@ $ ->
 
 
 		updateOrder: ->
-			#get the updated order of the tasks
+			
 
+			#check if any categories have changed - update in the modal
+			
+
+			#get the updated order of the tasks
+			
 			updateObj = {}
+
 			$('.task-list').each ->
+
 				list = $(this).find('.sortable li').each (index) ->
+
 					_task = $(this).find('.item-detail').text()
 					_id = $(this).data('id')
 					_order = Number(index)
+					_target = '#' + $(this).closest('.task-list').attr('id')
+
+					log 'targt:'
+					log _target
+
 					_item = tasks.get(_id)
 					_item.save
 						order: _order
+						target: _target
+
 
 
 			# log 'collection updates'

@@ -108,13 +108,15 @@ ul.sortable li:hover .item-options {
 }
 .container-left nav .non-day ul li {
   background: #3c3c3c;
-  padding: 5px 13px;
+  padding: 5px 20px;
   position: relative;
 }
 .container-left nav .non-day ul li .item-detail {
   padding-bottom: 4px;
   color: #cccccc;
   display: block;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding-bottom: 10px;
 }
 
 .week {
@@ -150,7 +152,7 @@ ul.sortable li:hover .item-options {
   margin-left: 30px;
   border-radius: 2px;
   margin: 5px;
-  padding: 5px 10px;
+  padding: 5px;
   border-bottom: 1px solid #dddddd;
   background: white;
   font-weight: 100;
