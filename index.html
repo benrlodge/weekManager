@@ -35,26 +35,25 @@
         <nav id="sidebar">
           <script type="text/template" id="template_sidebar">
           
-              <div class="non-day onDeck od task-list">
+              <div id="onDeck" class="non-day task-list">
                 <h3>On Deck</h3>
                 <ul class="sortable">
                   {{#each onDeckTasks}}
-                    <li> 
-                      <span class='side-item'> {{this.detail}} 
-                        <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span>
-                      </span>
+                    <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                      <span class='item-detail'>{{this.detail}} </span>
+                      <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+                    </li>
                   {{/each}}
                 </ul>
               </div>
         
-              <div class="non-day backBurner bb task-list">
+              <div id="backBurner" class="non-day bb task-list">
                 <h3>Back Burner</h3>
                 <ul class="sortable">
                   {{#each backBurnerTasks}}
-                    <li>
-                      <span class='side-item'> {{this.detail}} 
-                        <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span>
-                      </span>
+                    <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                      <span class='item-detail'>{{this.detail}} </span>
+                      <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
                     </li>
                   {{/each}}
                 </ul>
@@ -72,43 +71,58 @@
       <div class="week">
         <script type="text/template" id="template_week">
 
-        <div class='day mon task-list'>
+        <div id="day-mon" class='day task-list'>
           <h2> Monday </h2>
           <ul class='sortable'>
             {{#each monTasks }}
-              <li> {{this.detail}} <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span> </li>
+              <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                <span class='item-detail'>{{this.detail}} </span>
+                <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+              </li>
             {{/each}}
           </ul>
         </div>
-        <div class='day tue task-list'>
+        <div id="day-tue" class='day task-list'>
           <h2> Tuesday </h2>
           <ul class='sortable'>
             {{#each tueTasks }}
-              <li> {{this.detail}} <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span> </li>
+              <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                <span class='item-detail'>{{this.detail}} </span>
+                <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+              </li>
             {{/each}}
           </ul>
         </div>
-        <div class='day wed task-list'>
+        <div id="day-wed" class='day task-list'>
           <h2> Wednesday </h2>
           <ul class='sortable'>
             {{#each wedTasks }}
-              <li> {{this.detail}} <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span> </li>
+              <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                <span class='item-detail'>{{this.detail}} </span>
+                <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+              </li>
             {{/each}}
           </ul>
         </div>
-        <div class='day thur task-list'>
+        <div id="day-thur" class='day task-list'>
           <h2> Thursday </h2>
           <ul class='sortable'>
             {{#each thurTasks }}
-              <li> {{this.detail}} <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span> </li>
+              <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                <span class='item-detail'>{{this.detail}} </span>
+                <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+              </li>
             {{/each}}
           </ul>
         </div>
-        <div class='day fri task-list'>
+        <div id="day-fri" class='day task-list'>
           <h2> Friday </h2>
           <ul class='sortable'>
             {{#each friTasks }}
-              <li> {{this.detail}} <span class='item-options'><img class='delete' data-id="{{ this.id }}" src='img/trash-icon.png'></span> </li>
+              <li data-order='{{ this.order }}' data-id="{{ this.id }}">
+                <span class='item-detail'>{{this.detail}} </span>
+                <span class='item-options'><img class='delete' src='img/trash-icon.png'></span> 
+              </li>
             {{/each}}
           </ul>
         </div>

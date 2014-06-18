@@ -20,9 +20,30 @@ ul
 		padding: 5px 0
 
 		li
+			position: relative
+			z-index: 5
+			
 			&:hover
 				cursor: default			
 			
+			.item-options
+				display: none
+				position: absolute
+				right: 0
+				top: 0
+				&:hover
+					cursor: pointer
+
+			.side-item
+				.item-options
+					top: 5px
+					right: 15px
+
+			&:hover
+				.item-options
+					display: block
+
+
 
 
 .container
@@ -104,55 +125,13 @@ ul
 				
 				li
 					background: rgb(60,60,60)
-					padding: 0 13px
+					padding: 5px 13px
 					position: relative
-
-
-					&:last-child
-						a
-							border-bottom: none
 					
-					.side-item
-						border-bottom: 1px solid rgba(0, 0, 0, 0.2)
-						border-top: 1px solid rgba(255, 255, 255, 0.05)
-						display: block
-						color: #fff
+					.item-detail
+						padding-bottom: 4px
 						color: #ccc
-						font-weight: 100
-						font-size: 15px
-						padding: 10px
-						text-decoration: none
-						font-family: $openSans
-
-						&:first-child
-							border-top: none
-
-
-						
-			
-
-
-//MOVE!!!
-
-// List Style
-ul
-	li
-		.item-options
-			display: none
-			position: absolute
-			right: 0
-			top: 0
-			&:hover
-				cursor: pointer
-
-		.side-item
-			.item-options
-				top: 5px
-				right: 15px
-
-		&:hover
-			.item-options
-				display: block
+						display: block
 
 
 
@@ -205,8 +184,6 @@ ul
 				
 				&:first-child
 					margin-top: 10px
-
-
 
 
 

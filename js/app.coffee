@@ -1,5 +1,6 @@
 devmode = true
 log = (m) -> console.log m if devmode 
+window.clearLocal = -> localStorage.clear()
 delay = (ms, func) -> setTimeout func, ms
 
 
@@ -13,54 +14,53 @@ $ ->
 
 	## Shortcuts for keyboard inputs	
 	DIRECTIVES = 
-		'Mon'		: '.mon'
-		'mon' 		: '.mon'
-		'monday' 	: '.mon'
-		'Tue'		: 'tue'
-		'tue' 		: '.tue'
-		'Wed'		: '.wed'
-		'wed' 		: '.wed'
-		'Thur'		: '.thur'
-		'thur'		: '.thur'
-		'Fri'		: '.fri'
-		'fri'		: '.fri'
-		'today'		: '.today'
-		'td'		: '.today'
-		'tomorrow'	: '.tomorrow'
-		'tom'		: '.tomorrow'
-		'od'		: '.onDeck'
-		'onDeck'	: '.onDeck'
-		'ondeck'	: '.onDeck'
-		'backburner': '.backburner'
-		'bb'		: '.backburner'
+		'Mon'		: '#day-mon'
+		'mon' 		: '#day-mon'
+		'monday' 	: '#day-mon'
+		'Tue'		: '#day-tue'
+		'tue' 		: '#day-tue'
+		'Wed'		: '#day-wed'
+		'wed' 		: '#day-wed'
+		'Thur'		: '#day-thur'
+		'thur'		: '#day-thur'
+		'Fri'		: '#day-fri'
+		'fri'		: '#day-fri'
+		'od'		: '#onDeck'
+		'onDeck'	: '#onDeck'
+		'ondeck'	: '#onDeck'
+		'backburner': '#backburner'
+		'bb'		: '#backburner'
+		# 'today'		: '#day-today'	
+		# 'td'		: '#day-today'
+		# 'now'		: '#day-today'
+		# 'tomorrow'	: '#day-tomorrow'
+		# 'tom'		: '#day-tomorrow'
 
 
 
-
-
+	## MODELS 
+	## ====================================
 	class Task extends Backbone.Model
 
 		defaults:
-			target: '.backBurner'
+			target: '#backBurner'
 			detail: 'empty'
 			order: ''
 			complete: false
 
-
 		initialize: -> 
 			@on 'remove', @destroy
-
-		
-
-
-	task = new Task
-
-
 
 
 
 	# http://mrbool.com/backbone-js-backbone-events/27796
 
+
+
+
+
+	## COLLECTIONS
+	## ====================================
 	class Tasks extends Backbone.Collection
 		url: '/'
 		model: Task
@@ -70,17 +70,13 @@ $ ->
 			@remove(elements, options)
 
 
-			
-
 	tasks = new Tasks
 
 
 
 
-
-
-	
-
+	## VIEW
+	## ====================================
 	class Week_View extends Backbone.View
 
 		el: $ 'body'
@@ -91,17 +87,22 @@ $ ->
 
 		taskInputWrapper 	: '.newTask'
 		taskInput 			: '#newTaskInput'
-		onDeck 				: '.onDeck'
-		onDeckList 			: '.onDeck ul'
+		onDeck 				: '#onDeck'
+		onDeckList 			: '#onDeck ul'
 		today 				: ''
 
 
 		initialize: ->
 			@collection.on('add', @render, this)
 			@collection.on('remove', @render, this)
+
 			@fetchStoredCollections()			
 			@virginCheck()
 			@sortablize()
+
+			# log 'STARTING COLLECTION'
+			# log @collection.each (index) ->
+			# 	log index.attributes
 
 
 
@@ -128,14 +129,22 @@ $ ->
 
 			## Filters
 			## =============
-			ondeck 		=  @collection.where({ target: '.onDeck' })
-			backburner 	=  @collection.where({ target: '.backburner' })			
-			monday 		=  @collection.where({ target: '.mon' })
-			tuesday 	=  @collection.where({ target: '.tue' })
-			wednesday 	=  @collection.where({ target: '.wed' })
-			thursday 	=  @collection.where({ target: '.thur' })
-			friday 		=  @collection.where({ target: '.fri' })
+			ondeck 		=  @collection.where({ target: '#onDeck' })
+			backburner 	=  @collection.where({ target: '#backburner' })			
+			monday 		=  @collection.where({ target: '#day-mon' })
+			
 
+			## WORKS BUT THEN DONT HAVE WHERE FILTER
+			# mondaySorted =  @collection.sortBy (t) -> t.get('order')
+			# log 'monday SORTED------------------------------'
+			# log mondaySorted
+
+			tuesday 	=  @collection.where({ target: '#day-tue' })
+			wednesday 	=  @collection.where({ target: '#day-wed' })
+			thursday 	=  @collection.where({ target: '#day-thur' })
+			friday 		=  @collection.where({ target: '#day-fri' })
+
+		
 			## Collections
 			## =============
 			ondeckCollection 		= new Tasks(ondeck)
@@ -146,6 +155,7 @@ $ ->
 			thursdayCollection 		= new Tasks(thursday)
 			fridayCollection 		= new Tasks(friday)
 
+			
 			
 			$('#sidebar').html @template_sidebar
 				onDeckTasks: 		ondeckCollection.toJSON()
@@ -160,7 +170,7 @@ $ ->
 				friTasks: 	fridayCollection.toJSON()
 			
 			@sortablize()
-			log @collection
+
 
 
 
@@ -168,8 +178,8 @@ $ ->
 		## ==================================
 
 		deleteTask: (e) ->
-			_task = $(e.currentTarget)
-			_taskId = $(_task).data('id')
+			_taskId = $(e.currentTarget).closest('li').data('id')
+
 			@undoShow(_taskId)
 			@lastDeletedTask = @collection.get(_taskId)
 			tasks.removeTask(_taskId)
@@ -178,17 +188,21 @@ $ ->
 			tasks.create(@lastDeletedTask)
 			@messageClear()
 			
+
 		addTask: (obj) ->
 			dir = obj.directive
 			detail = obj.detail
+			obj.order = $(dir).find('li').length
+
+
 
 			newTask = tasks.create
 				target: obj.directive
 				detail: obj.detail
+				order: obj.order
 			,
 				success: (response) =>
 					@render()  ## Better way of doing? Need for getting id after save
-
 		
 
 
@@ -235,14 +249,31 @@ $ ->
 		sortablize: ->
 			$('.sortable').sortable
 				connectWith: ".sortable"
-
-			$('.sortable').droppable
-				drop: =>
+				refreshPositions: true
+				update: =>
 					@updateOrder()
     
 
+
 		updateOrder: ->
-			log 'update the order'
+			#get the updated order of the tasks
+
+			updateObj = {}
+			$('.task-list').each ->
+				list = $(this).find('.sortable li').each (index) ->
+					_task = $(this).find('.item-detail').text()
+					_id = $(this).data('id')
+					_order = Number(index)
+					_item = tasks.get(_id)
+					_item.save
+						order: _order
+
+
+			# log 'collection updates'
+			# log @collection.each (index) ->
+			# 	log index.attributes
+
+
 
 
 			
@@ -274,6 +305,7 @@ $ ->
 		searchComplete: ->
 			task = ( $(@taskInput).val()	).trim()
 			task_info = @searchDirectives(task)
+
 			@addTask(task_info) 	
 			@searchHide()
 			
@@ -295,7 +327,7 @@ $ ->
 
 			if _count is 0
 				return{
-					directive: '.backburner'
+					directive: '#backburner'
 					detail: task
 				}
 
@@ -306,21 +338,13 @@ $ ->
 		virginCheck: ->
 			if @collection.size() is 0
 				tasks.create({
-					target: '.mon'
+					target: '#day-mon'
 					detail: 'I am a task for Monday!'
 					order: 0
 				})				
 				@render()
 			else
 				return
-
-
-
-
-
-
-
-
 
 
 		
@@ -331,29 +355,19 @@ $ ->
 
 
 
+	## ROUTERS 
+	## ====================================
+	class Router extends Backbone.Router
+		initialize: ->
+
+
+
+	router = new Router
+
+
+
+
+
 # Sortabe order
 # http://jsfiddle.net/7X4PX/4/
-
-
-
-
-
-
-
-
-# GOOD!
-# http://www.levihackwith.com/using-handlebars-each-blocks-with-backbone-collections-templates/
-
-
-
-
-
-# var friends = new Backbone.Collection([
-#   {name: "Athos",      job: "Musketeer"},
-#   {name: "Porthos",    job: "Musketeer"},
-#   {name: "Aramis",     job: "Musketeer"},
-#   {name: "d'Artagnan", job: "Guard"},
-# ]);
-
-# JSON.stringify( friends.where({job: "Musketeer"}) );
 

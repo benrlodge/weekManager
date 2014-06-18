@@ -11,37 +11,37 @@
     }
   };
 
+  window.clearLocal = function() {
+    return localStorage.clear();
+  };
+
   delay = function(ms, func) {
     return setTimeout(func, ms);
   };
 
   $(function() {
-    var DIRECTIVES, KEYCODES, Task, Tasks, Week_View, task, tasks, week_view, _ref, _ref1, _ref2;
+    var DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, router, tasks, week_view, _ref, _ref1, _ref2, _ref3;
     KEYCODES = {
       enter: 13,
       esc: 27
     };
     DIRECTIVES = {
-      'Mon': '.mon',
-      'mon': '.mon',
-      'monday': '.mon',
-      'Tue': 'tue',
-      'tue': '.tue',
-      'Wed': '.wed',
-      'wed': '.wed',
-      'Thur': '.thur',
-      'thur': '.thur',
-      'Fri': '.fri',
-      'fri': '.fri',
-      'today': '.today',
-      'td': '.today',
-      'tomorrow': '.tomorrow',
-      'tom': '.tomorrow',
-      'od': '.onDeck',
-      'onDeck': '.onDeck',
-      'ondeck': '.onDeck',
-      'backburner': '.backburner',
-      'bb': '.backburner'
+      'Mon': '#day-mon',
+      'mon': '#day-mon',
+      'monday': '#day-mon',
+      'Tue': '#day-tue',
+      'tue': '#day-tue',
+      'Wed': '#day-wed',
+      'wed': '#day-wed',
+      'Thur': '#day-thur',
+      'thur': '#day-thur',
+      'Fri': '#day-fri',
+      'fri': '#day-fri',
+      'od': '#onDeck',
+      'onDeck': '#onDeck',
+      'ondeck': '#onDeck',
+      'backburner': '#backburner',
+      'bb': '#backburner'
     };
     Task = (function(_super) {
       __extends(Task, _super);
@@ -52,7 +52,7 @@
       }
 
       Task.prototype.defaults = {
-        target: '.backBurner',
+        target: '#backBurner',
         detail: 'empty',
         order: '',
         complete: false
@@ -65,7 +65,6 @@
       return Task;
 
     })(Backbone.Model);
-    task = new Task;
     Tasks = (function(_super) {
       __extends(Tasks, _super);
 
@@ -106,9 +105,9 @@
 
       Week_View.prototype.taskInput = '#newTaskInput';
 
-      Week_View.prototype.onDeck = '.onDeck';
+      Week_View.prototype.onDeck = '#onDeck';
 
-      Week_View.prototype.onDeckList = '.onDeck ul';
+      Week_View.prototype.onDeckList = '#onDeck ul';
 
       Week_View.prototype.today = '';
 
@@ -136,25 +135,25 @@
       Week_View.prototype.render = function() {
         var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
         ondeck = this.collection.where({
-          target: '.onDeck'
+          target: '#onDeck'
         });
         backburner = this.collection.where({
-          target: '.backburner'
+          target: '#backburner'
         });
         monday = this.collection.where({
-          target: '.mon'
+          target: '#day-mon'
         });
         tuesday = this.collection.where({
-          target: '.tue'
+          target: '#day-tue'
         });
         wednesday = this.collection.where({
-          target: '.wed'
+          target: '#day-wed'
         });
         thursday = this.collection.where({
-          target: '.thur'
+          target: '#day-thur'
         });
         friday = this.collection.where({
-          target: '.fri'
+          target: '#day-fri'
         });
         ondeckCollection = new Tasks(ondeck);
         backburnerCollection = new Tasks(backburner);
@@ -174,14 +173,12 @@
           thurTasks: thursdayCollection.toJSON(),
           friTasks: fridayCollection.toJSON()
         }));
-        this.sortablize();
-        return log(this.collection);
+        return this.sortablize();
       };
 
       Week_View.prototype.deleteTask = function(e) {
-        var _task, _taskId;
-        _task = $(e.currentTarget);
-        _taskId = $(_task).data('id');
+        var _taskId;
+        _taskId = $(e.currentTarget).closest('li').data('id');
         this.undoShow(_taskId);
         this.lastDeletedTask = this.collection.get(_taskId);
         return tasks.removeTask(_taskId);
@@ -197,9 +194,11 @@
           _this = this;
         dir = obj.directive;
         detail = obj.detail;
+        obj.order = $(dir).find('li').length;
         return newTask = tasks.create({
           target: obj.directive,
-          detail: obj.detail
+          detail: obj.detail,
+          order: obj.order
         }, {
           success: function(response) {
             return _this.render();
@@ -242,18 +241,31 @@
 
       Week_View.prototype.sortablize = function() {
         var _this = this;
-        $('.sortable').sortable({
-          connectWith: ".sortable"
-        });
-        return $('.sortable').droppable({
-          drop: function() {
+        return $('.sortable').sortable({
+          connectWith: ".sortable",
+          refreshPositions: true,
+          update: function() {
             return _this.updateOrder();
           }
         });
       };
 
       Week_View.prototype.updateOrder = function() {
-        return log('update the order');
+        var updateObj;
+        updateObj = {};
+        return $('.task-list').each(function() {
+          var list;
+          return list = $(this).find('.sortable li').each(function(index) {
+            var _id, _item, _order, _task;
+            _task = $(this).find('.item-detail').text();
+            _id = $(this).data('id');
+            _order = Number(index);
+            _item = tasks.get(_id);
+            return _item.save({
+              order: _order
+            });
+          });
+        });
       };
 
       Week_View.prototype.searchHide = function() {
@@ -284,7 +296,7 @@
       };
 
       Week_View.prototype.searchComplete = function() {
-        var task_info;
+        var task, task_info;
         task = ($(this.taskInput).val()).trim();
         task_info = this.searchDirectives(task);
         this.addTask(task_info);
@@ -310,7 +322,7 @@
         }
         if (_count === 0) {
           return {
-            directive: '.backburner',
+            directive: '#backburner',
             detail: task
           };
         }
@@ -319,7 +331,7 @@
       Week_View.prototype.virginCheck = function() {
         if (this.collection.size() === 0) {
           tasks.create({
-            target: '.mon',
+            target: '#day-mon',
             detail: 'I am a task for Monday!',
             order: 0
           });
@@ -332,9 +344,23 @@
       return Week_View;
 
     })(Backbone.View);
-    return week_view = new Week_View({
+    week_view = new Week_View({
       collection: tasks
     });
+    Router = (function(_super) {
+      __extends(Router, _super);
+
+      function Router() {
+        _ref3 = Router.__super__.constructor.apply(this, arguments);
+        return _ref3;
+      }
+
+      Router.prototype.initialize = function() {};
+
+      return Router;
+
+    })(Backbone.Router);
+    return router = new Router;
   });
 
 }).call(this);

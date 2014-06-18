@@ -16,8 +16,28 @@ ul {
 ul.sortable {
   padding: 5px 0;
 }
+ul.sortable li {
+  position: relative;
+  z-index: 5;
+}
 ul.sortable li:hover {
   cursor: default;
+}
+ul.sortable li .item-options {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+ul.sortable li .item-options:hover {
+  cursor: pointer;
+}
+ul.sortable li .side-item .item-options {
+  top: 5px;
+  right: 15px;
+}
+ul.sortable li:hover .item-options {
+  display: block;
 }
 
 .container {
@@ -88,42 +108,12 @@ ul.sortable li:hover {
 }
 .container-left nav .non-day ul li {
   background: #3c3c3c;
-  padding: 0 13px;
+  padding: 5px 13px;
   position: relative;
 }
-.container-left nav .non-day ul li:last-child a {
-  border-bottom: none;
-}
-.container-left nav .non-day ul li .side-item {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  display: block;
-  color: white;
+.container-left nav .non-day ul li .item-detail {
+  padding-bottom: 4px;
   color: #cccccc;
-  font-weight: 100;
-  font-size: 15px;
-  padding: 10px;
-  text-decoration: none;
-  font-family: "Open Sans", sans-serif;
-}
-.container-left nav .non-day ul li .side-item:first-child {
-  border-top: none;
-}
-
-ul li .item-options {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-ul li .item-options:hover {
-  cursor: pointer;
-}
-ul li .side-item .item-options {
-  top: 5px;
-  right: 15px;
-}
-ul li:hover .item-options {
   display: block;
 }
 
