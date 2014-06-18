@@ -126,14 +126,25 @@ $ ->
 		sortAndFilterDay = (collection, day, sortby) ->
 			_( collection.where({ target: day }) ).sortBy (t) -> t.get(sortby)
 
+		
+		# cmp = (a, b) ->
+		# 	[ a, b ] = [ a.get('order'), b.get('order') ]
+		# 	return  1 if(a > b)
+		# 	return -1 if(a < b)
+		# 	return  0
+		# @collection.where(target: '#day-mon').sort(cmp)
+
+
 
 
 		render: () ->		
 
 			## Filters
 			## =============
-			ondeck 		=  @collection.where({ target: '#onDeck' })
-			backburner 	=  @collection.where({ target: '#backburner' })			
+			ondeck 		= sortAndFilterDay(@collection, '#onDeck','order')
+			backburner 	= sortAndFilterDay(@collection, '#backburner','order')			
+
+
 			monday 		= sortAndFilterDay(@collection, '#day-mon','order')
 			tuesday 	= sortAndFilterDay(@collection, '#day-tue','order')
 			wednesday 	= sortAndFilterDay(@collection, '#day-wed','order')

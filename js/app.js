@@ -144,12 +144,8 @@
 
       Week_View.prototype.render = function() {
         var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
-        ondeck = this.collection.where({
-          target: '#onDeck'
-        });
-        backburner = this.collection.where({
-          target: '#backburner'
-        });
+        ondeck = sortAndFilterDay(this.collection, '#onDeck', 'order');
+        backburner = sortAndFilterDay(this.collection, '#backburner', 'order');
         monday = sortAndFilterDay(this.collection, '#day-mon', 'order');
         tuesday = sortAndFilterDay(this.collection, '#day-tue', 'order');
         wednesday = sortAndFilterDay(this.collection, '#day-wed', 'order');
