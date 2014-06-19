@@ -4,14 +4,11 @@ window.clearLocal = -> localStorage.clear()
 delay = (ms, func) -> setTimeout func, ms
 
 
-###
-	
+###	
 	To Do:
 
-	 - Move tasks to different days, draggable and typing
+	 - Add update task name
 	 - Add "header" option
-
-
 
 ###
 
@@ -46,6 +43,25 @@ $ ->
 		# 'now'		: '#day-today'
 		# 'tomorrow'	: '#day-tomorrow'
 		# 'tom'		: '#day-tomorrow'
+
+
+	DAYS = 
+		1 : '#day-mon'
+		2 : '#day-tue'
+		3 : '#day-wed'
+		4 : '#day-thur'
+		5 : '#day-fri'
+
+
+
+
+	## Helpers
+	## ====================================
+	cmp = (a, b) ->
+		[ a, b ] = [ a.get('order'), b.get('order') ]
+		return  1 if(a > b)
+		return -1 if(a < b)
+		return  0
 
 
 
@@ -111,12 +127,38 @@ $ ->
 			@virginCheck()
 			@sortablize()
 
+			# log 'days:'
+			# date = new Date()
+			# today = date.getDay()
+
+
+
+			# log '----'
+
+
+			# dayDiv = ''
+
+			# for k, v of DAYS
+
+			# 	if Number(k) is today
+			# 		dayDiv = v
+
+
+			# $('.week > .day').each ->
+			# 	log 'this: '
+			# 	log this
+		
+
+
+
+
 
 		events: ->
 			"keypress" : "searchKeyPress"
 			"keyup"	: "searchKeyUp"
 			"click .delete" : "deleteTask"
 			"click a[data-action=undo]" : "undoTask"
+			"dblclick .item-detail" : "updateTask"
 
 
 
@@ -127,18 +169,7 @@ $ ->
 		template_sidebar: Handlebars.compile( $("#template_sidebar").html() )
 		
 
-		## Helpers
-		## =============
-		# sortAndFilterDay = (collection, day, sortby) ->
-		# 	_( collection.where({ target: day }) ).sortBy (t) -> t.get(sortby)
 
-		
-		cmp = (a, b) ->
-			[ a, b ] = [ a.get('order'), b.get('order') ]
-			return  1 if(a > b)
-			return -1 if(a < b)
-			return  0
-		# @collection.where(target: '#day-mon').sort(cmp)
 
 
 
@@ -188,8 +219,11 @@ $ ->
 		## Task Actions
 		## ==================================
 
+		getTaskId = (task) ->
+			$(task.currentTarget).closest('li').data('id')
+
 		deleteTask: (e) ->
-			_taskId = $(e.currentTarget).closest('li').data('id')
+			_taskId = getTaskId(e)
 
 			@undoShow(_taskId)
 			@lastDeletedTask = @collection.get(_taskId)
@@ -198,6 +232,17 @@ $ ->
 		undoTask: (e) ->
 			tasks.create(@lastDeletedTask)
 			@messageClear()
+
+		
+		updateTask: (e) ->
+			log 'update'
+			log e
+			id = getTaskId(e)
+			log 'id:!'
+			log id
+			$(e.currentTarget).text()
+
+
 			
 
 		addTask: (obj) ->

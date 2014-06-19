@@ -19,17 +19,16 @@
     return setTimeout(func, ms);
   };
 
-  /*
-  	
+
+  /*	
   	To Do:
   
-  	 - Move tasks to different days, draggable and typing
+  	 - Add update task name
   	 - Add "header" option
-  */
-
+   */
 
   $(function() {
-    var DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, router, tasks, week_view, _ref, _ref1, _ref2, _ref3;
+    var DAYS, DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, cmp, router, tasks, week_view;
     KEYCODES = {
       enter: 13,
       esc: 27
@@ -52,12 +51,29 @@
       'backburner': '#backburner',
       'bb': '#backburner'
     };
+    DAYS = {
+      1: '#day-mon',
+      2: '#day-tue',
+      3: '#day-wed',
+      4: '#day-thur',
+      5: '#day-fri'
+    };
+    cmp = function(a, b) {
+      var _ref;
+      _ref = [a.get('order'), b.get('order')], a = _ref[0], b = _ref[1];
+      if (a > b) {
+        return 1;
+      }
+      if (a < b) {
+        return -1;
+      }
+      return 0;
+    };
     Task = (function(_super) {
       __extends(Task, _super);
 
       function Task() {
-        _ref = Task.__super__.constructor.apply(this, arguments);
-        return _ref;
+        return Task.__super__.constructor.apply(this, arguments);
       }
 
       Task.prototype.defaults = {
@@ -78,8 +94,7 @@
       __extends(Tasks, _super);
 
       function Tasks() {
-        _ref1 = Tasks.__super__.constructor.apply(this, arguments);
-        return _ref1;
+        return Tasks.__super__.constructor.apply(this, arguments);
       }
 
       Tasks.prototype.url = '/';
@@ -97,13 +112,12 @@
     })(Backbone.Collection);
     tasks = new Tasks;
     Week_View = (function(_super) {
-      var cmp;
+      var getTaskId;
 
       __extends(Week_View, _super);
 
       function Week_View() {
-        _ref2 = Week_View.__super__.constructor.apply(this, arguments);
-        return _ref2;
+        return Week_View.__super__.constructor.apply(this, arguments);
       }
 
       Week_View.prototype.el = $('body');
@@ -135,25 +149,14 @@
           "keypress": "searchKeyPress",
           "keyup": "searchKeyUp",
           "click .delete": "deleteTask",
-          "click a[data-action=undo]": "undoTask"
+          "click a[data-action=undo]": "undoTask",
+          "dblclick .item-detail": "updateTask"
         };
       };
 
       Week_View.prototype.template_week = Handlebars.compile($("#template_week").html());
 
       Week_View.prototype.template_sidebar = Handlebars.compile($("#template_sidebar").html());
-
-      cmp = function(a, b) {
-        var _ref3;
-        _ref3 = [a.get('order'), b.get('order')], a = _ref3[0], b = _ref3[1];
-        if (a > b) {
-          return 1;
-        }
-        if (a < b) {
-          return -1;
-        }
-        return 0;
-      };
 
       Week_View.prototype.render = function() {
         var backburner, backburnerCollection, friday, fridayCollection, monday, mondayCollection, ondeck, ondeckCollection, thursday, thursdayCollection, tuesday, tuesdayCollection, wednesday, wednesdayCollection;
@@ -199,9 +202,13 @@
         return this.sortablize();
       };
 
+      getTaskId = function(task) {
+        return $(task.currentTarget).closest('li').data('id');
+      };
+
       Week_View.prototype.deleteTask = function(e) {
         var _taskId;
-        _taskId = $(e.currentTarget).closest('li').data('id');
+        _taskId = getTaskId(e);
         this.undoShow(_taskId);
         this.lastDeletedTask = this.collection.get(_taskId);
         return tasks.removeTask(_taskId);
@@ -212,9 +219,18 @@
         return this.messageClear();
       };
 
+      Week_View.prototype.updateTask = function(e) {
+        var id;
+        log('update');
+        log(e);
+        id = getTaskId(e);
+        log('id:!');
+        log(id);
+        return $(e.currentTarget).text();
+      };
+
       Week_View.prototype.addTask = function(obj) {
-        var detail, dir, newTask,
-          _this = this;
+        var detail, dir, newTask;
         dir = obj.directive;
         detail = obj.detail;
         obj.order = $(dir).find('li').length;
@@ -223,19 +239,22 @@
           detail: obj.detail,
           order: obj.order
         }, {
-          success: function(response) {
-            return _this.render();
-          }
+          success: (function(_this) {
+            return function(response) {
+              return _this.render();
+            };
+          })(this)
         });
       };
 
       Week_View.prototype.fetchStoredCollections = function() {
-        var p,
-          _this = this;
+        var p;
         p = this.collection.fetch();
-        return p.done(function() {
-          _.each(_this.collection.models, (function(item) {}), _this);
-        });
+        return p.done((function(_this) {
+          return function() {
+            _.each(_this.collection.models, (function(item) {}), _this);
+          };
+        })(this));
       };
 
       Week_View.prototype.messageClear = function() {
@@ -243,13 +262,14 @@
       };
 
       Week_View.prototype.messageUpdate = function(obj) {
-        var html,
-          _this = this;
+        var html;
         html = "<a href='#' data-id='" + obj.id + "' data-action='" + obj.action + "'>" + obj.message + "</a>";
         $('.messages').empty().append(html).addClass('show');
-        return delay(6000, function() {
-          return _this.messageClear();
-        });
+        return delay(6000, (function(_this) {
+          return function() {
+            return _this.messageClear();
+          };
+        })(this));
       };
 
       Week_View.prototype.undoShow = function(id) {
@@ -263,13 +283,14 @@
       };
 
       Week_View.prototype.sortablize = function() {
-        var _this = this;
         return $('.sortable').sortable({
           connectWith: ".sortable",
           refreshPositions: true,
-          update: function() {
-            return _this.updateOrder();
-          }
+          update: (function(_this) {
+            return function() {
+              return _this.updateOrder();
+            };
+          })(this)
         });
       };
 
@@ -378,8 +399,7 @@
       __extends(Router, _super);
 
       function Router() {
-        _ref3 = Router.__super__.constructor.apply(this, arguments);
-        return _ref3;
+        return Router.__super__.constructor.apply(this, arguments);
       }
 
       Router.prototype.initialize = function() {};
