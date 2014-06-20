@@ -250,7 +250,7 @@
       Week_View.prototype.addTask = function(obj) {
         var detail, dir, newTask;
         dir = obj.directive;
-        detail = obj.detail.trim();
+        detail = obj.detail;
         obj.order = $(dir).find('li').length;
         return newTask = tasks.create({
           target: obj.directive,
