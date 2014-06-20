@@ -23,6 +23,8 @@
   /*	
   	To Do:
   	
+  	 -- CLEAR TIMEOUT WHEN MULTIPLE DELTED BEFORE 6000
+  
   	 - Refactor templates using handlebars block helpers
   	 - Move templates out
   	 - Add update task name

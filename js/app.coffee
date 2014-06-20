@@ -7,6 +7,8 @@ delay = (ms, func) -> setTimeout func, ms
 ###	
 	To Do:
 	
+	 -- CLEAR TIMEOUT WHEN MULTIPLE DELTED BEFORE 6000
+
 	 - Refactor templates using handlebars block helpers
 	 - Move templates out
 	 - Add update task name
@@ -288,7 +290,7 @@ $ ->
 		messageUpdate: (obj) ->
 			html = "<a href='#' data-id='#{obj.id}' data-action='#{obj.action}'>#{obj.message}</a>"
 			$('.messages').empty().append(html).addClass('show')
-			delay 6000, => @messageClear()
+			delay 6000, => @messageClear() 
 
 		undoShow: (id) ->
 			obj = {
