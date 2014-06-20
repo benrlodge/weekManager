@@ -1,10 +1,7 @@
-
-
 module.exports = function(grunt) {
     grunt.initConfig({
         
         pkg: grunt.file.readJSON('package.json'),
-
 
 		 watch: {
 		    coffee: {
@@ -26,7 +23,6 @@ module.exports = function(grunt) {
 		    }
 		  },
 
-
 		  sass: {
 		    dist: {
 		    	files: {
@@ -34,8 +30,6 @@ module.exports = function(grunt) {
 		    	}
 		    }
 		  },
-
-
 
 	    concat: {
 	        js : {

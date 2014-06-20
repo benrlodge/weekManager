@@ -6,9 +6,12 @@ delay = (ms, func) -> setTimeout func, ms
 
 ###	
 	To Do:
-
+	
+	 - Refactor templates using handlebars block helpers
 	 - Add update task name
 	 - Add "header" option
+
+	 - Find how to use jade with coffeescript
 
 ###
 
@@ -111,7 +114,6 @@ $ ->
 		clickStatus: false		## For search bar keyboard controls
 		lastDeletedTask: ''		## For undo
 
-
 		taskInputWrapper 	: '.newTask'
 		taskInput 			: '#newTaskInput'
 		onDeck 				: '#onDeck'
@@ -175,7 +177,7 @@ $ ->
 
 		render: () ->		
 
-			## Filters
+			## Filters...better way to do this??
 			## =============
 			ondeck 		= @collection.where({target: '#onDeck'}).sort(cmp)
 			backburner 	= @collection.where({target: '#backburner'}).sort(cmp)
@@ -243,14 +245,11 @@ $ ->
 			$(e.currentTarget).text()
 
 
-			
-
+		
 		addTask: (obj) ->
 			dir = obj.directive
 			detail = obj.detail
 			obj.order = $(dir).find('li').length
-
-
 
 			newTask = tasks.create
 				target: obj.directive
@@ -314,11 +313,6 @@ $ ->
 		updateOrder: ->
 			
 
-			#check if any categories have changed - update in the modal
-			
-
-			#get the updated order of the tasks
-			
 			updateObj = {}
 
 			$('.task-list').each ->
@@ -329,9 +323,6 @@ $ ->
 					_id = $(this).data('id')
 					_order = Number(index)
 					_target = '#' + $(this).closest('.task-list').attr('id')
-
-					log 'targt:'
-					log _target
 
 					_item = tasks.get(_id)
 					_item.save

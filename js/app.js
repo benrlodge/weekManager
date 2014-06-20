@@ -22,9 +22,12 @@
 
   /*	
   	To Do:
-  
+  	
+  	 - Refactor templates using handlebars block helpers
   	 - Add update task name
   	 - Add "header" option
+  
+  	 - Find how to use jade with coffeescript
    */
 
   $(function() {
@@ -305,8 +308,6 @@
             _id = $(this).data('id');
             _order = Number(index);
             _target = '#' + $(this).closest('.task-list').attr('id');
-            log('targt:');
-            log(_target);
             _item = tasks.get(_id);
             return _item.save({
               order: _order,
