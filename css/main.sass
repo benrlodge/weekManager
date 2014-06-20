@@ -12,7 +12,6 @@ body
 	background: rgb(52,52,52)
 
 
-
 ul
 	margin: 0
 	padding: 0
@@ -45,109 +44,101 @@ ul
 
 
 
-.container
+.primary-container
 	width: 2000px
 
-.top-panel
-	padding: 0
-	position: fixed
-	z-index: 2
-	left: 300px
-	width: 100%
-	color: #999
-	
-	.messages
-		opacity: 0
-		padding: 10px 15px
-		a
-			padding: 15px
-			color: #e5e5e5
 
-
-		&.show
-			opacity: 1
-			transition: .4s all
-
-
-
-
-
-
-.container-left
-	width: 300px
-	padding: 0
-	position: fixed
-	z-index: 2
-	background: rgb(53,53,53)
-	background-image: linear-gradient(#474849, #424244)
-	height: 100%
-	color: #fff
-
-	header
-		padding: 14px
-		border-bottom: 1px solid rgba(0, 0, 0, 0.3)
-		box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.07)
-
-
-	h1
-		margin: 0
+	.info-panel
 		padding: 0
-		font-size: 18px
-		font-weight: 100
+		position: fixed
+		z-index: 2
+		left: 300px
+		width: 100%
+		color: #999
+		
+		.messages
+			opacity: 0
+			padding: 10px 15px
+			a
+				padding: 15px
+				color: #e5e5e5
+
+
+			&.show
+				opacity: 1
+				transition: .4s all
 
 
 
-	nav
+	.sidebar-container
+		width: 300px
+		padding: 0
+		position: fixed
+		z-index: 2
+		background: rgb(53,53,53)
+		background-image: linear-gradient(#474849, #424244)
+		height: 100%
+		color: #fff
+
+		header
+			padding: 14px
+			border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+			box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.07)
 
 
-		.non-day
-			border-bottom: 1px solid rgba(0, 0, 0, 0.2)
-			border-top: 1px solid rgba(255, 255, 255, 0.05)
+		h1
+			margin: 0
+			padding: 0
+			font-size: 18px
+			font-weight: 100
 
-			&:first-of-type
-				border-top: none
 
-			h3
-				margin: 0
-				
-				color: #999
-				text-shadow: 0px 1px 0px black
-				font-size: 16px
-				padding: 10px 0 10px 20px
 
-			ul
-				margin: 0
-				padding: 0
-				list-style: none
-				border-top: 1px solid rgba(0, 0, 0, 0.2)
-				
-				li
-					background: rgb(60,60,60)
-					padding: 5px 20px
-					position: relative
+		// 
+		.other-tasks-container
 
-					// &:last-child
-					// 	.item-detail
-					// 		border-bottom: none
+			.non-day
+				border-bottom: 1px solid rgba(0, 0, 0, 0.2)
+				border-top: 1px solid rgba(255, 255, 255, 0.05)
+
+				&:first-of-type
+					border-top: none
+
+				h3
+					margin: 0
+					color: #999
+					text-shadow: 0px 1px 0px #000
+					font-size: 16px
+					padding: 10px 0 10px 20px
+
+				ul
+					margin: 0
+					padding: 0
+					list-style: none
+					border-top: 1px solid rgba(0, 0, 0, 0.2)
 					
-					.item-detail
-						padding-bottom: 4px
-						color: #ccc
-						display: block
-						border-bottom: 1px solid rgba(0, 0, 0, 0.15)
-						padding-bottom: 10px
+					li
+						background: rgb(60,60,60)
+						padding: 5px 20px
+						position: relative
+						
+						.item-detail
+							padding-bottom: 4px
+							color: #ccc
+							display: block
+							border-bottom: 1px solid rgba(0, 0, 0, 0.15)
+							padding-bottom: 10px
 
 
 
 
 
-
-.week
-	position: relative
-	z-index: 1
-	width: 1640px
-	margin-left: 325px
-	padding-top: 45px
+	.weekday-container
+		position: relative
+		z-index: 1
+		width: 1640px
+		margin-left: 325px
+		padding-top: 45px
 
 
 

@@ -20,20 +20,20 @@
 
 
 
-    <div id="container" class="container">
+    <div class="primary-container">
       
-      <div class="top-panel"> 
+      <div class="info-panel"> 
         <div class='messages'></div>
       </div>
 
     
-      <div class="container-left">
+      <div class="sidebar-container">
     
         <header>
           <h1>Weekly Tasks</h1>
         </header>
     
-        <nav id="sidebar">
+        <div class="other-tasks-container">
           <script type="text/template" id="template_sidebar">
           
               <div id="onDeck" class="non-day task-list">
@@ -61,7 +61,7 @@
               </div>
           </script>
 
-        </nav>
+        </div>
     
 
       </div> <!-- //container-left -->
@@ -69,7 +69,7 @@
 
 
 
-      <div class="week">
+      <div class="weekday-container">
         <script type="text/template" id="template_week">
 
         <div id="day-mon" class='day task-list' data-day='1'>

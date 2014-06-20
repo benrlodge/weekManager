@@ -8,12 +8,21 @@ delay = (ms, func) -> setTimeout func, ms
 	To Do:
 	
 	 - Refactor templates using handlebars block helpers
+	 - Move templates out
 	 - Add update task name
 	 - Add "header" option
-
 	 - Find how to use jade with coffeescript
 
 ###
+
+
+
+
+## VARS
+## ============================================
+
+$weekDayContainer = $('.weekday-container')
+$sidebarContainer = $('.other-tasks-container')
 
 
 $ ->
@@ -98,7 +107,6 @@ $ ->
 
 		removeTask: (elements, options) ->
 			@remove(elements, options)
-
 
 	tasks = new Tasks
 
@@ -200,13 +208,11 @@ $ ->
 			fridayCollection 		= new Tasks(friday)
 
 			
-			
-			$('#sidebar').html @template_sidebar
+			$sidebarContainer.html @template_sidebar
 				onDeckTasks: 		ondeckCollection.toJSON()
 				backBurnerTasks:	backburnerCollection.toJSON()
-
 			
-			$('.week').html @template_week
+			$weekDayContainer.html @template_week
 				monTasks: 	mondayCollection.toJSON()
 				tueTasks: 	tuesdayCollection.toJSON()
 				wedTasks: 	wednesdayCollection.toJSON()
@@ -235,7 +241,6 @@ $ ->
 			tasks.create(@lastDeletedTask)
 			@messageClear()
 
-		
 		updateTask: (e) ->
 			log 'update'
 			log e
@@ -243,8 +248,6 @@ $ ->
 			log 'id:!'
 			log id
 			$(e.currentTarget).text()
-
-
 		
 		addTask: (obj) ->
 			dir = obj.directive

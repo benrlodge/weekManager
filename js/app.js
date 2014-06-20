@@ -1,5 +1,5 @@
 (function() {
-  var delay, devmode, log,
+  var $sidebarContainer, $weekDayContainer, delay, devmode, log,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -24,11 +24,15 @@
   	To Do:
   	
   	 - Refactor templates using handlebars block helpers
+  	 - Move templates out
   	 - Add update task name
   	 - Add "header" option
-  
   	 - Find how to use jade with coffeescript
    */
+
+  $weekDayContainer = $('.weekday-container');
+
+  $sidebarContainer = $('.other-tasks-container');
 
   $(function() {
     var DAYS, DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, cmp, router, tasks, week_view;
@@ -191,11 +195,11 @@
         wednesdayCollection = new Tasks(wednesday);
         thursdayCollection = new Tasks(thursday);
         fridayCollection = new Tasks(friday);
-        $('#sidebar').html(this.template_sidebar({
+        $sidebarContainer.html(this.template_sidebar({
           onDeckTasks: ondeckCollection.toJSON(),
           backBurnerTasks: backburnerCollection.toJSON()
         }));
-        $('.week').html(this.template_week({
+        $weekDayContainer.html(this.template_week({
           monTasks: mondayCollection.toJSON(),
           tueTasks: tuesdayCollection.toJSON(),
           wedTasks: wednesdayCollection.toJSON(),
