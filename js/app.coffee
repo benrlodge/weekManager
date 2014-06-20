@@ -27,6 +27,7 @@ $weekDayContainer = $('.weekday-container')
 $sidebarContainer = $('.other-tasks-container')
 
 
+
 $ ->
 
 	KEYCODES =
@@ -166,8 +167,8 @@ $ ->
 
 
 		events: ->
-			"keypress" : "searchKeyPress"
-			"keyup"	: "searchKeyUp"
+			"keypress" : "keyPress"
+			"keyup"	: "keyUp"
 			"click .delete" : "deleteTask"
 			"click a[data-action=undo]" : "undoTask"
 			"dblclick .item-detail" : "updateTask"
@@ -245,15 +246,31 @@ $ ->
 
 		updateTask: (e) ->
 			log 'update'
-			log e
-			id = getTaskId(e)
-			log 'id:!'
-			log id
-			$(e.currentTarget).text()
+			# id = getTaskId(e)
+			target = $(e.currentTarget)
+			text = $(e.currentTarget).text()
+			@updateTaskInput(text, target)
+
+
+		updateTaskInput: (text, target) ->
+			log 'tearget: '
+			log $(target)
+
+			inputHTML = "<input class='input-task-update empty-input' type='text' value='#{text}'>"
+			$(target).empty().append(inputHTML)
+			
+			
+
+			# $inputTaskUpdate = $('.input-task-update')  ## WHY CAN'T I MAKE THIS GLOBAL ??
+
+			$('.input-task-update').focus()
+
+
 		
+
 		addTask: (obj) ->
 			dir = obj.directive
-			detail = obj.detail
+			detail = obj.detail.trim()
 			obj.order = $(dir).find('li').length
 
 			newTask = tasks.create
@@ -317,7 +334,6 @@ $ ->
 
 		updateOrder: ->
 			
-
 			updateObj = {}
 
 			$('.task-list').each ->
@@ -346,39 +362,71 @@ $ ->
 			
 			
 			
-		## Search
+		## Tasks
 		## ================================
 
-		searchHide: ->
+		inputTaskInputVal = ->
+			$('.input-task-update').val()
+
+		updateTaskActive = ->
+			$('.input-task-update').length
+
+		newTaskInputHide: ->
 			@searchStatus = false
 			$(@taskInputWrapper).hide()
 			$(@taskInput).val('')
 			@clickStatus = false
 
-		searchShow: ->
+		newTaskInputShow: ->
 			@searchStatus = true
 			$(@taskInputWrapper).show()
 			$(@taskInput).focus()
 			@clickStatus = true
 
-		searchKeyPress: (key) ->
-			return @searchComplete() if key.keyCode is KEYCODES.enter
-			@searchShow()
+		keyPress: (key) ->
+			
+			if updateTaskActive()
+				if key.keyCode is KEYCODES.enter
+					#updateDetail = @inputTaskInputVal()  ## WHY DOESN'T THIS WORK??
+					updateDetail = $('.input-task-update').val()
+					_id = $('.input-task-update').closest('li').data('id')
+					_item = tasks.get(_id)
+					_item.save
+						detail: updateDetail
 
-		searchKeyUp: (key) ->
+					return @render()
+					
+				return
+
+			if key.keyCode is KEYCODES.enter
+				## Check if input is active
+				return @keyComplete() 
+
+			@newTaskInputShow()
+
+
+
+		keyUp: (key) ->
+
+			if updateTaskActive()
+				if key.keyCode is KEYCODES.esc
+					log 'canceled, exti'
+					return
+
 			if key.keyCode is KEYCODES.esc and @searchStatus
-				@searchHide()
+				@newTaskInputHide()
 
-		searchComplete: ->
-			task = ( $(@taskInput).val()	).trim()
+
+		keyComplete: ->
+			task = ( $(@taskInput).val() ).trim()
 			task_info = @searchDirectives(task)
-
 			@addTask(task_info) 	
-			@searchHide()
+			@newTaskInputHide()
+
 			
 		searchDirectives: (task) ->
 			split_task = task
-			task_split = task.split(":")
+			task_split = task.split("--")
 			task_directive = task_split[0]
 			task_detail = task_split[1]
 			
@@ -406,7 +454,7 @@ $ ->
 			if @collection.size() is 0
 				tasks.create({
 					target: '#day-mon'
-					detail: 'I am a task for Monday!'
+					detail: 'I am a task for Monday! Imagine that!'
 					order: 0
 				})				
 				@render()

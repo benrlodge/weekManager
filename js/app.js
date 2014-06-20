@@ -121,7 +121,7 @@
     })(Backbone.Collection);
     tasks = new Tasks;
     Week_View = (function(_super) {
-      var getTaskId;
+      var getTaskId, inputTaskInputVal, updateTaskActive;
 
       __extends(Week_View, _super);
 
@@ -155,8 +155,8 @@
 
       Week_View.prototype.events = function() {
         return {
-          "keypress": "searchKeyPress",
-          "keyup": "searchKeyUp",
+          "keypress": "keyPress",
+          "keyup": "keyUp",
           "click .delete": "deleteTask",
           "click a[data-action=undo]": "undoTask",
           "dblclick .item-detail": "updateTask"
@@ -229,19 +229,26 @@
       };
 
       Week_View.prototype.updateTask = function(e) {
-        var id;
+        var target, text;
         log('update');
-        log(e);
-        id = getTaskId(e);
-        log('id:!');
-        log(id);
-        return $(e.currentTarget).text();
+        target = $(e.currentTarget);
+        text = $(e.currentTarget).text();
+        return this.updateTaskInput(text, target);
+      };
+
+      Week_View.prototype.updateTaskInput = function(text, target) {
+        var inputHTML;
+        log('tearget: ');
+        log($(target));
+        inputHTML = "<input class='input-task-update empty-input' type='text' value='" + text + "'>";
+        $(target).empty().append(inputHTML);
+        return $('.input-task-update').focus();
       };
 
       Week_View.prototype.addTask = function(obj) {
         var detail, dir, newTask;
         dir = obj.directive;
-        detail = obj.detail;
+        detail = obj.detail.trim();
         obj.order = $(dir).find('li').length;
         return newTask = tasks.create({
           target: obj.directive,
@@ -323,45 +330,72 @@
         });
       };
 
-      Week_View.prototype.searchHide = function() {
+      inputTaskInputVal = function() {
+        return $('.input-task-update').val();
+      };
+
+      updateTaskActive = function() {
+        return $('.input-task-update').length;
+      };
+
+      Week_View.prototype.newTaskInputHide = function() {
         this.searchStatus = false;
         $(this.taskInputWrapper).hide();
         $(this.taskInput).val('');
         return this.clickStatus = false;
       };
 
-      Week_View.prototype.searchShow = function() {
+      Week_View.prototype.newTaskInputShow = function() {
         this.searchStatus = true;
         $(this.taskInputWrapper).show();
         $(this.taskInput).focus();
         return this.clickStatus = true;
       };
 
-      Week_View.prototype.searchKeyPress = function(key) {
+      Week_View.prototype.keyPress = function(key) {
+        var updateDetail, _id, _item;
+        if (updateTaskActive()) {
+          if (key.keyCode === KEYCODES.enter) {
+            updateDetail = $('.input-task-update').val();
+            _id = $('.input-task-update').closest('li').data('id');
+            _item = tasks.get(_id);
+            _item.save({
+              detail: updateDetail
+            });
+            return this.render();
+          }
+          return;
+        }
         if (key.keyCode === KEYCODES.enter) {
-          return this.searchComplete();
+          return this.keyComplete();
         }
-        return this.searchShow();
+        return this.newTaskInputShow();
       };
 
-      Week_View.prototype.searchKeyUp = function(key) {
+      Week_View.prototype.keyUp = function(key) {
+        if (updateTaskActive()) {
+          if (key.keyCode === KEYCODES.esc) {
+            log('canceled, exti');
+            return;
+          }
+        }
         if (key.keyCode === KEYCODES.esc && this.searchStatus) {
-          return this.searchHide();
+          return this.newTaskInputHide();
         }
       };
 
-      Week_View.prototype.searchComplete = function() {
+      Week_View.prototype.keyComplete = function() {
         var task, task_info;
         task = ($(this.taskInput).val()).trim();
         task_info = this.searchDirectives(task);
         this.addTask(task_info);
-        return this.searchHide();
+        return this.newTaskInputHide();
       };
 
       Week_View.prototype.searchDirectives = function(task) {
         var k, split_task, task_detail, task_directive, task_split, v, _count;
         split_task = task;
-        task_split = task.split(":");
+        task_split = task.split("--");
         task_directive = task_split[0];
         task_detail = task_split[1];
         _count = 0;
@@ -387,7 +421,7 @@
         if (this.collection.size() === 0) {
           tasks.create({
             target: '#day-mon',
-            detail: 'I am a task for Monday!',
+            detail: 'I am a task for Monday! Imagine that!',
             order: 0
           });
           return this.render();
