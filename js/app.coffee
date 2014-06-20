@@ -28,6 +28,8 @@ $sidebarContainer = $('.other-tasks-container')
 
 
 
+currentTaskText = ''
+
 $ ->
 
 	KEYCODES =
@@ -183,9 +185,6 @@ $ ->
 		
 
 
-
-
-
 		render: () ->		
 
 			## Filters...better way to do this??
@@ -246,10 +245,13 @@ $ ->
 
 		updateTask: (e) ->
 			log 'update'
+
 			# id = getTaskId(e)
 			target = $(e.currentTarget)
-			text = $(e.currentTarget).text()
-			@updateTaskInput(text, target)
+			currentTaskText = $(e.currentTarget).text()
+
+
+			@updateTaskInput(currentTaskText, target)
 
 
 		updateTaskInput: (text, target) ->
@@ -264,6 +266,7 @@ $ ->
 			# $inputTaskUpdate = $('.input-task-update')  ## WHY CAN'T I MAKE THIS GLOBAL ??
 
 			$('.input-task-update').focus()
+
 
 
 		
@@ -393,13 +396,10 @@ $ ->
 					_item = tasks.get(_id)
 					_item.save
 						detail: updateDetail
-
 					return @render()
-					
 				return
 
 			if key.keyCode is KEYCODES.enter
-				## Check if input is active
 				return @keyComplete() 
 
 			@newTaskInputShow()
@@ -410,8 +410,8 @@ $ ->
 
 			if updateTaskActive()
 				if key.keyCode is KEYCODES.esc
-					log 'canceled, exti'
-					return
+					$('.input-task-update').remove()
+					return @render()
 
 			if key.keyCode is KEYCODES.esc and @searchStatus
 				@newTaskInputHide()

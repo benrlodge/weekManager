@@ -1,5 +1,5 @@
 (function() {
-  var $sidebarContainer, $weekDayContainer, delay, devmode, log,
+  var $sidebarContainer, $weekDayContainer, currentTaskText, delay, devmode, log,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -35,6 +35,8 @@
   $weekDayContainer = $('.weekday-container');
 
   $sidebarContainer = $('.other-tasks-container');
+
+  currentTaskText = '';
 
   $(function() {
     var DAYS, DIRECTIVES, KEYCODES, Router, Task, Tasks, Week_View, cmp, router, tasks, week_view;
@@ -229,11 +231,11 @@
       };
 
       Week_View.prototype.updateTask = function(e) {
-        var target, text;
+        var target;
         log('update');
         target = $(e.currentTarget);
-        text = $(e.currentTarget).text();
-        return this.updateTaskInput(text, target);
+        currentTaskText = $(e.currentTarget).text();
+        return this.updateTaskInput(currentTaskText, target);
       };
 
       Week_View.prototype.updateTaskInput = function(text, target) {
@@ -375,8 +377,8 @@
       Week_View.prototype.keyUp = function(key) {
         if (updateTaskActive()) {
           if (key.keyCode === KEYCODES.esc) {
-            log('canceled, exti');
-            return;
+            $('.input-task-update').remove();
+            return this.render();
           }
         }
         if (key.keyCode === KEYCODES.esc && this.searchStatus) {
