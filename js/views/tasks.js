@@ -328,7 +328,7 @@
         return tasks.create({
           target: '#todo',
           detail: 'Do some karate kicks',
-          order: 4
+          order: 5
         });
       }
     };

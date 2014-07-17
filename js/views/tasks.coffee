@@ -344,7 +344,7 @@ class App.Week_View extends Backbone.View
 			tasks.create({
 				target: '#todo'
 				detail: 'Do some karate kicks'
-				order: 4
+				order: 5
 			})			
 
 week_view = new App.Week_View({ collection: window.tasks })
