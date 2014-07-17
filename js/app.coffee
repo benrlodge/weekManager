@@ -4,19 +4,6 @@ window.clearLocal = -> localStorage.clear()
 delay = (ms, func) -> setTimeout func, ms
 
 
-###	
-	To Do:
-	
-	 -- CLEAR TIMEOUT WHEN MULTIPLE DELTED BEFORE 6000
-
-	 - Refactor templates using handlebars block helpers
-	 - Move templates out
-	 - Add update task name
-	 - Add "header" option
-	 - Find how to use jade with coffeescript
-
-###
-
 
 
 
@@ -25,9 +12,6 @@ delay = (ms, func) -> setTimeout func, ms
 
 $weekDayContainer = $('.weekday-container')
 $sidebarContainer = $('.other-tasks-container')
-
-
-
 currentTaskText = ''
 
 $ ->
@@ -39,35 +23,10 @@ $ ->
 
 	## Shortcuts for keyboard inputs	
 	DIRECTIVES = 
-		'Mon'		: '#day-mon'
-		'mon' 		: '#day-mon'
-		'monday' 	: '#day-mon'
-		'Tue'		: '#day-tue'
-		'tue' 		: '#day-tue'
-		'Wed'		: '#day-wed'
-		'wed' 		: '#day-wed'
-		'Thur'		: '#day-thur'
-		'thur'		: '#day-thur'
-		'Fri'		: '#day-fri'
-		'fri'		: '#day-fri'
-		'od'		: '#onDeck'
-		'onDeck'	: '#onDeck'
-		'ondeck'	: '#onDeck'
-		'backburner': '#backburner'
-		'bb'		: '#backburner'
-		# 'today'		: '#day-today'	
-		# 'td'		: '#day-today'
-		# 'now'		: '#day-today'
-		# 'tomorrow'	: '#day-tomorrow'
-		# 'tom'		: '#day-tomorrow'
+		'todo'		: '#todo'
+		'doing' 	: '#doing'
+		'done' 		: '#done'
 
-
-	DAYS = 
-		1 : '#day-mon'
-		2 : '#day-tue'
-		3 : '#day-wed'
-		4 : '#day-thur'
-		5 : '#day-fri'
 
 
 
@@ -79,6 +38,7 @@ $ ->
 		return  1 if(a > b)
 		return -1 if(a < b)
 		return  0
+
 
 
 
@@ -129,8 +89,6 @@ $ ->
 
 		taskInputWrapper 	: '.newTask'
 		taskInput 			: '#newTaskInput'
-		onDeck 				: '#onDeck'
-		onDeckList 			: '#onDeck ul'
 		today 				: ''
 
 
@@ -138,34 +96,12 @@ $ ->
 			@collection.on('add', @render, this)
 			@collection.on('remove', @render, this)
 
+
 			@fetchStoredCollections()			
 			@virginCheck()
 			@sortablize()
 
-			# log 'days:'
-			# date = new Date()
-			# today = date.getDay()
-
-
-
-			# log '----'
-
-
-			# dayDiv = ''
-
-			# for k, v of DAYS
-
-			# 	if Number(k) is today
-			# 		dayDiv = v
-
-
-			# $('.week > .day').each ->
-			# 	log 'this: '
-			# 	log this
-		
-
-
-
+	
 
 
 		events: ->
@@ -174,52 +110,38 @@ $ ->
 			"click .delete" : "deleteTask"
 			"click a[data-action=undo]" : "undoTask"
 			"dblclick .item-detail" : "updateTask"
+			"blur .item-detail"	: "hideUpdate"
+
 
 
 
 
 		## Templates
 		## =============
-		template_week: Handlebars.compile( $("#template_week").html() )
-		template_sidebar: Handlebars.compile( $("#template_sidebar").html() )
+		template_week: Handlebars.compile($("#template_week").html())
+		# template_sidebar: Handlebars.compile($("#template_sidebar").html())
 		
 
 
 		render: () ->		
 
-			## Filters...better way to do this??
 			## =============
-			ondeck 		= @collection.where({target: '#onDeck'}).sort(cmp)
-			backburner 	= @collection.where({target: '#backburner'}).sort(cmp)
-			monday 		= @collection.where({target: '#day-mon'}).sort(cmp)
-			tuesday 	= @collection.where({target: '#day-tue'}).sort(cmp)
-			wednesday 	= @collection.where({target: '#day-wed'}).sort(cmp)
-			thursday 	= @collection.where({target: '#day-thur'}).sort(cmp)
-			friday 		= @collection.where({target: '#day-fri'}).sort(cmp)
-
+			todo 	= @collection.where({target: '#todo'}).sort(cmp)
+			doing 	= @collection.where({target: '#doing'}).sort(cmp)
+			done 	= @collection.where({target: '#done'}).sort(cmp)
 
 		
-			## Collections
+			## Collections... is there a better way to do this??
 			## =============
-			ondeckCollection 		= new Tasks(ondeck)
-			backburnerCollection 	= new Tasks(backburner)
-			mondayCollection  		= new Tasks(monday)
-			tuesdayCollection 		= new Tasks(tuesday)
-			wednesdayCollection 	= new Tasks(wednesday)
-			thursdayCollection 		= new Tasks(thursday)
-			fridayCollection 		= new Tasks(friday)
+			todoCollection  		= new Tasks(todo)
+			doingCollection 		= new Tasks(doing)
+			doneCollection 			= new Tasks(done)
 
 			
-			$sidebarContainer.html @template_sidebar
-				onDeckTasks: 		ondeckCollection.toJSON()
-				backBurnerTasks:	backburnerCollection.toJSON()
-			
 			$weekDayContainer.html @template_week
-				monTasks: 	mondayCollection.toJSON()
-				tueTasks: 	tuesdayCollection.toJSON()
-				wedTasks: 	wednesdayCollection.toJSON()
-				thurTasks: 	thursdayCollection.toJSON()
-				friTasks: 	fridayCollection.toJSON()
+				todoTasks:	 	todoCollection.toJSON()
+				doingTasks: 	doingCollection.toJSON()
+				doneTasks: 		doneCollection.toJSON()
 			
 			@sortablize()
 
@@ -239,40 +161,32 @@ $ ->
 			@lastDeletedTask = @collection.get(_taskId)
 			tasks.removeTask(_taskId)
 
+
 		undoTask: (e) ->
 			tasks.create(@lastDeletedTask)
 			@messageClear()
 
 		updateTask: (e) ->
-			log 'update'
-
-			# id = getTaskId(e)
 			target = $(e.currentTarget)
 			currentTaskText = $(e.currentTarget).text()
-
-
 			@updateTaskInput(currentTaskText, target)
 
 
 		updateTaskInput: (text, target) ->
-			log 'tearget: '
-			log $(target)
-
 			inputHTML = "<input class='input-task-update empty-input' type='text' value='#{text}'>"
 			$(target).empty().append(inputHTML)
 			
-			
-
 			# $inputTaskUpdate = $('.input-task-update')  ## WHY CAN'T I MAKE THIS GLOBAL ??
-
 			$('.input-task-update').focus()
 
 
 
-		
 
+
+		
 		addTask: (obj) ->
 			dir = obj.directive
+			log dir
 			detail = obj.detail
 			obj.order = $(dir).find('li').length ## BETTER TO LOOK THIS UP DIRECTLY IN COLLECTION?? THIS SEEMS FASTER
 
@@ -328,11 +242,15 @@ $ ->
 		## ================================
 		sortablize: ->
 			$('.sortable').sortable
+				helper: "clone"
 				connectWith: ".sortable"
 				refreshPositions: true
 				update: =>
 					@updateOrder()
     
+
+
+
 
 
 		updateOrder: ->
@@ -352,13 +270,6 @@ $ ->
 					_item.save
 						order: _order
 						target: _target
-
-
-
-			# log 'collection updates'
-			# log @collection.each (index) ->
-			# 	log index.attributes
-
 
 
 
@@ -387,7 +298,6 @@ $ ->
 			@clickStatus = true
 
 		keyPress: (key) ->
-			
 			if updateTaskActive()
 				if key.keyCode is KEYCODES.enter
 					#updateDetail = @inputTaskInputVal()  ## WHY DOESN'T THIS WORK??
@@ -409,17 +319,26 @@ $ ->
 		keyUp: (key) ->
 
 			if updateTaskActive()
-				if key.keyCode is KEYCODES.esc
-					$('.input-task-update').remove()
-					return @render()
+				@hideUpdate() if key.keyCode is KEYCODES.esc
+
 
 			if key.keyCode is KEYCODES.esc and @searchStatus
 				@newTaskInputHide()
 
 
+		hideUpdate: ->
+			log 'hide update'
+			$('.input-task-update').remove()
+			return @render()
+
+
+
 		keyComplete: ->
 			task = ( $(@taskInput).val() ).trim()
 			task_info = @searchDirectives(task)
+
+			log task_info
+
 			@addTask(task_info) 	
 			@newTaskInputHide()
 
@@ -429,11 +348,16 @@ $ ->
 			task_split = task.split("--")
 			task_directive = task_split[0]
 			task_detail = task_split[1]
-			
 			_count = 0
+
+
 
 			for k, v of DIRECTIVES
 				if k is task_directive
+					log k
+					log task_directive
+					log 'we got a match'
+
 					_count++
 					return{
 						directive: v
@@ -442,9 +366,11 @@ $ ->
 
 			if _count is 0
 				return{
-					directive: '#backburner'
+					directive: '#todo'
 					detail: task
 				}
+
+
 
 
 
@@ -453,16 +379,35 @@ $ ->
 		virginCheck: ->
 			if @collection.size() is 0
 				tasks.create({
-					target: '#day-mon'
-					detail: 'I am a task for Monday! Imagine that!'
+					target: '#todo'
+					detail: 'I am an example task!'
 					order: 0
 				})				
-				@render()
-			else
-				return
-
-
-		
+				tasks.create({
+					target: '#todo'
+					detail: 'Double click me to edit'
+					order: 1
+				})				
+				tasks.create({
+					target: '#doing'
+					detail: 'Delete me by clicking the x icon'
+					order: 2
+				})				
+				tasks.create({
+					target: '#done'
+					detail: 'drag and drop me to another column'
+					order: 3
+				})				
+				tasks.create({
+					target: '#todo'
+					detail: 'To create a new task, type the column name followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:'
+					order: 4
+				})				
+				tasks.create({
+					target: '#todo'
+					detail: 'Do some karate kicks'
+					order: 4
+				})			
 
 	week_view = new Week_View({ collection: tasks })
 
@@ -476,13 +421,18 @@ $ ->
 		initialize: ->
 
 
-
 	router = new Router
 
 
 
 
 
-# Sortabe order
-# http://jsfiddle.net/7X4PX/4/
+
+
+
+
+
+
+
+
 

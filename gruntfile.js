@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 		      tasks: ['coffee:compile']
 		    },
 		    css: {
-		    	files: 'css/main.sass',
+		    	files: 'css/main.scss',
 		    	tasks: ['sass']
 		    }
 		  },
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
 		  sass: {
 		    dist: {
 		    	files: {
-		    		 'css/main.css': 'css/main.sass'
+		    		 'css/main.css': 'css/main.scss'
 		    	}
 		    }
 		  },

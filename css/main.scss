@@ -1,0 +1,309 @@
+@import 'bourbon/bourbon';
+@import 'vendor/normalize';
+
+
+
+// Variables
+// ===================================
+
+$openSans: 'Open Sans', sans-serif;
+
+
+
+// Mixins
+// ===================================
+
+
+
+// General Elements
+// ===================================
+
+*{
+	box-sizing: border-box;
+	font-family: 'Lato', sans-serif;
+}
+
+
+body{
+	margin: 0;
+	padding: 0;
+	background: rgb(52,52,52);
+}
+
+
+h1{
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+	font-weight: 100;
+}
+
+h2{
+	margin: 0;
+	padding: 10px 5px;
+	color: #1f1f21;
+	font-size: 16px;
+	text-align: center;
+	background: #bbb;
+}
+	
+h3{
+	margin: 0;
+	color: #999;
+	text-shadow: 0px 1px 0px #000;
+	font-size: 16px;
+	padding: 10px 0 10px 20px;
+}
+
+p, span{
+	font-size: 16px;
+}
+
+a{
+	color: #e5e5e5;
+}
+
+
+ul{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+
+
+
+// General Layout
+// ===================================
+
+.primary-container {
+	width: 2000px;
+}
+
+.weekday-container{
+	position: relative;
+	z-index: 1;
+	width: 1640px;
+	margin-left: 325px;
+	padding-top: 45px;
+}
+
+
+
+
+// Modals and Text Inputs
+// ===================================
+
+.newTask{
+	display: none;
+}
+
+.empty-input{
+	background: none;
+	outline: none;
+	border: none;
+	font-size: 16px;
+}
+
+.input-task-update{
+	color: red;
+}
+
+.taskInput{
+	position: fixed;
+	z-index: 3;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.6);
+
+	input{
+		position: absolute;
+		left: 100px;
+		top: 100px;
+		width: 100%;
+		font-size: 60px;
+		color: #fff;
+	}
+
+}
+
+
+
+
+
+
+
+// Task Lists
+// ===================================
+
+ul.sortable{
+	padding: 0;
+
+	li{
+		position: relative;
+		z-index: 5;
+
+		&:hover{
+			cursor: default;
+		}
+		
+		.item-options{
+			display: none;
+			position: absolute;
+			right: 0;
+			top: 0;
+
+			img{
+				opacity: .5
+			}
+
+			&:hover{
+				cursor: pointer;
+				display: block;
+
+				img{
+				opacity: 1;
+				}
+			}
+
+		}
+
+		.side-item{
+			.item-options{
+				top: 5px;
+				right: 15px;
+			}
+		}
+
+		&:hover{
+			.item-options{
+				display: block;
+			}
+		}
+	}
+}
+
+
+
+// Messsage Area
+// ====================
+.info-panel{
+	padding: 0;
+	position: fixed;
+	z-index: 2;
+	left: 300px;
+	width: 100%;
+	color: #999;
+	
+	.messages{
+		opacity: 0;
+		padding: 10px 15px;
+
+		a{
+			padding: 15px;
+		}
+		&.show{
+			opacity: 1;
+			transition: .4s all;
+		}
+	}
+}
+
+
+
+// Misc Tasks Area
+// ====================
+.sidebar-container{
+	width: 300px;
+	padding: 0;
+	position: fixed;
+	z-index: 2;
+	background: rgb(53,53,53);
+	background-image: linear-gradient(#474849, #424244);
+	height: 100%;
+	color: #fff;
+
+
+	header{
+		padding: 14px;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+		box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.07);
+	}
+
+
+
+	.other-tasks-container{
+
+		.non-day{
+			border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+			border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+
+			&:first-of-type{
+				border-top: none;
+			}
+
+			ul{
+				border-top: 1px solid rgba(0, 0, 0, 0.2);
+			}
+				
+				li{
+					background: rgb(60,60,60);
+					padding: 5px 20px;					
+				}
+					
+					.item-detail{
+						padding-bottom: 4px;
+						color: #ccc;
+						display: block;
+						border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+						padding-bottom: 10px;
+
+					}
+		}
+
+	}
+
+}
+
+
+
+
+// Daily Tasks Area
+// ====================
+
+.day{
+	display: inline-block;
+	width: 300px;
+	margin-bottom: 20px;
+	background: #bbb;
+	border-radius: 2px;
+	vertical-align: top;
+	margin: 5px;
+	padding-bottom: 15px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	
+	ul{
+		li{
+			position: relative;
+			margin-left: 30px;
+			border-radius: 2px;
+			margin: 5px;
+			padding: 10px 15px;
+			background: #fff;
+			font-weight: 100;
+			list-style: none;
+
+			
+			&:first-child{
+				margin-top: 10px;
+			}
+		}
+	}
+
+}
+
+
+
