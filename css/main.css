@@ -254,7 +254,8 @@ ul {
     color: #fff; }
 
 ul.sortable {
-  padding: 0; }
+  padding: 0;
+  padding-bottom: 20px; }
   ul.sortable li {
     position: relative;
     z-index: 5; }

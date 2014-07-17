@@ -1,16 +1,21 @@
 module.exports = function(grunt) {
-    grunt.initConfig({
-        
-        pkg: grunt.file.readJSON('package.json'),
+	grunt.initConfig({
+		
+		pkg: grunt.file.readJSON('package.json'),
 
-		 watch: {
-		    coffee: {
-		      files: 'js/app.coffee',
-		      tasks: ['coffee:compile']
-		    },
-		    css: {
-		    	files: 'css/main.scss',
-		    	tasks: ['sass']
+		watch: {
+			coffee: {
+				files: [
+					'js/app.coffee',
+					'js/models/task.coffee', 
+					'js/collections/tasks.coffee', 
+					'js/views/tasks.coffee', 
+					'js/routers/taskRouter.coffee'],
+				tasks: ['coffee:compile']
+			},
+			css: {
+				files: 'css/main.scss',
+				tasks: ['sass']
 		    }
 		  },
 
@@ -18,7 +23,10 @@ module.exports = function(grunt) {
 		    compile: {
 		    	files: {
 		    		 'js/app.js': 'js/app.coffee', 
-		    		 // 'path/to/another.js': ['path/to/sources/*.coffee', 'path/to/more/*.coffee'] // compile and concat into single file
+		    		 'js/models/task.js': 'js/models/task.coffee', 
+		    		 'js/collections/tasks.js': 'js/collections/tasks.coffee', 
+		    		 'js/views/tasks.js': 'js/views/tasks.coffee', 
+		    		 'js/routers/taskRouter.js': 'js/routers/taskRouter.coffee'
 		    	}
 		    }
 		  },
