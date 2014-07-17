@@ -10,8 +10,6 @@ DIRECTIVES =
 	'done' 		: '#done'
 
 
-
-
 ## Helpers
 ## ====================================
 cmp = (a, b) ->
@@ -128,12 +126,11 @@ class App.Week_View extends Backbone.View
 
 
 
-
 	
 	addTask: (obj) ->
 		dir = obj.directive
 		detail = obj.detail
-		obj.order = $(dir).find('li').length ## BETTER TO LOOK THIS UP DIRECTLY IN COLLECTION?? THIS SEEMS FASTER
+		obj.order = $(dir).find('li').length ## BETTER TO LOOK THIS UP DIRECTLY IN COLLECTION?? THIS SEEMS FASTER/EASIER?
 
 		newTask = tasks.create
 			target: obj.directive
@@ -141,7 +138,7 @@ class App.Week_View extends Backbone.View
 			order: obj.order
 		,
 			success: (response) =>
-				@render()  ## Better way of doing? Need for getting id after save
+				@render()  ## Better way of doing? Need for getting id in DOM after save
 	
 
 

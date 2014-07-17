@@ -9,13 +9,6 @@
       return Task.__super__.constructor.apply(this, arguments);
     }
 
-    Task.prototype.defaults = {
-      target: '#backBurner',
-      detail: 'empty',
-      order: '',
-      complete: false
-    };
-
     Task.prototype.initialize = function() {
       return this.on('remove', this.destroy);
     };
