@@ -52,7 +52,8 @@
       this.collection.on('remove', this.render, this);
       this.fetchStoredCollections();
       this.virginCheck();
-      return this.sortablize();
+      this.sortablize();
+      return this.render();
     };
 
     Week_View.prototype.events = function() {
@@ -302,7 +303,7 @@
       if (this.collection.size() === 0) {
         tasks.create({
           target: '#todo',
-          detail: 'I am an example task!',
+          detail: 'I am an example task! Drag me to done!',
           order: 0
         });
         tasks.create({
@@ -311,24 +312,19 @@
           order: 1
         });
         tasks.create({
-          target: '#doing',
+          target: '#todo',
           detail: 'Delete me by clicking the x icon',
           order: 2
         });
         tasks.create({
-          target: '#done',
-          detail: 'drag and drop me to another column',
-          order: 3
-        });
-        tasks.create({
           target: '#todo',
           detail: 'To create a new task, just start typing the column name followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:',
-          order: 4
+          order: 3
         });
         return tasks.create({
           target: '#todo',
-          detail: 'Do some karate kicks',
-          order: 5
+          detail: 'I use local storage. Refresh the browser and I am right where you left me',
+          order: 4
         });
       }
     };

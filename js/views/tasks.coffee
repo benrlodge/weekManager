@@ -4,7 +4,7 @@ KEYCODES =
 	esc 	: 27
 
 ## Shortcuts for keyboard inputs	
-DIRECTIVES = 
+DIRECTIVES =
 	'todo'		: '#todo'
 	'doing' 	: '#doing'
 	'done' 		: '#done'
@@ -44,7 +44,7 @@ class App.Week_View extends Backbone.View
 		@fetchStoredCollections()			
 		@virginCheck()
 		@sortablize()
-
+		@render()
 
 
 
@@ -315,7 +315,7 @@ class App.Week_View extends Backbone.View
 		if @collection.size() is 0
 			tasks.create({
 				target: '#todo'
-				detail: 'I am an example task!'
+				detail: 'I am an example task! Drag me to done!'
 				order: 0
 			})				
 			tasks.create({
@@ -324,25 +324,21 @@ class App.Week_View extends Backbone.View
 				order: 1
 			})				
 			tasks.create({
-				target: '#doing'
+				target: '#todo'
 				detail: 'Delete me by clicking the x icon'
 				order: 2
 			})				
 			tasks.create({
-				target: '#done'
-				detail: 'drag and drop me to another column'
+				target: '#todo'
+				detail: 'To create a new task, just start typing the column name followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:'
 				order: 3
 			})				
 			tasks.create({
 				target: '#todo'
-				detail: 'To create a new task, just start typing the column name followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:'
+				detail: 'I use local storage. Refresh the browser and I am right where you left me'
 				order: 4
-			})				
-			tasks.create({
-				target: '#todo'
-				detail: 'Do some karate kicks'
-				order: 5
-			})			
+			})
+			
 
 week_view = new App.Week_View({ collection: window.tasks })
 
