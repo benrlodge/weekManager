@@ -318,13 +318,18 @@
         });
         tasks.create({
           target: '#todo',
-          detail: 'To create a new task, just start typing the column name followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:',
+          detail: 'To create a new task, just start typing the column name with no spaces followed by two dashes and then your message. For example typing: "todo--Do some karate kicks" without the quotes will create the following card:',
           order: 3
+        });
+        tasks.create({
+          target: '#todo',
+          detail: 'Do some karate kicks!',
+          order: 4
         });
         return tasks.create({
           target: '#todo',
           detail: 'I use local storage. Refresh the browser and I am right where you left me',
-          order: 4
+          order: 5
         });
       }
     };
