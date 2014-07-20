@@ -12,7 +12,7 @@
     
     
     <!-- Modals and what not -->
-    <div class="taskInput newTask">
+    <div class="task-input newTask">
       <input class='empty-input' type="text" id="newTaskInput" placeholder="New Task...">
     </div>
 
@@ -23,32 +23,15 @@
     <div class="primary-container">
       
       <div class="info-panel"> 
-        <div class='messages'></div>
+        <div class='info-panel__messages'></div>
       </div>
-
-    
-      <div class="sidebar-container">
-    
-        <header>
-          <h1>Work is fun!</h1>
-        </header>
-    
-        <div class="other-tasks-container">
-
-                <h3>Projects</h3>
-
-        </div>
-    
-
-      </div> <!-- //container-left -->
-
 
 
 
       <div class="weekday-container">
         <script type="text/template" id="template_week">
 
-        <div id="todo" class='day task-list' data-day='1'>
+        <div id="todo" class='task-column task-list' data-day='1'>
           <h2> To Do </h2>
           <ul class='sortable'>
             {{#each todoTasks }}
@@ -60,7 +43,7 @@
           </ul>
         </div>
 
-        <div id="doing" class='day task-list' data-day='2'>
+        <div id="doing" class='task-column task-list' data-day='2'>
           <h2> Doing </h2>
           <ul class='sortable'>
             {{#each doingTasks }}
@@ -72,7 +55,7 @@
           </ul>
         </div>
         
-        <div id="done" class='day task-list' data-day='3'>
+        <div id="done" class='task-column task-list' data-day='3'>
           <h2> Done </h2>
           <ul class='sortable'>
             {{#each doneTasks }}

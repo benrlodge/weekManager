@@ -1,4 +1,3 @@
-@import 'bourbon/bourbon';
 @import 'vendor/normalize';
 
 
@@ -46,7 +45,7 @@ h2{
 	text-align: center;
 	background: #bbb;
 }
-	
+
 h3{
 	margin: 0;
 	color: #999;
@@ -76,15 +75,12 @@ ul{
 // General Layout
 // ===================================
 
-.primary-container {
-	width: 2000px;
-}
+.primary-container{}
 
 .weekday-container{
 	position: relative;
 	z-index: 1;
-	width: 1640px;
-	margin-left: 325px;
+	margin: 0 30px;
 	padding-top: 45px;
 }
 
@@ -109,7 +105,7 @@ ul{
 	color: red;
 }
 
-.taskInput{
+.task-input{
 	position: fixed;
 	z-index: 3;
 	top: 0;
@@ -148,7 +144,7 @@ ul.sortable{
 		&:hover{
 			cursor: default;
 		}
-		
+
 		.item-options{
 			display: none;
 			position: absolute;
@@ -164,7 +160,7 @@ ul.sortable{
 				display: block;
 
 				img{
-				opacity: 1;
+					opacity: 1;
 				}
 			}
 
@@ -196,77 +192,22 @@ ul.sortable{
 	left: 300px;
 	width: 100%;
 	color: #999;
-	
-	.messages{
-		opacity: 0;
-		padding: 10px 15px;
 
-		a{
-			padding: 15px;
-		}
-		&.show{
-			opacity: 1;
-			transition: .4s all;
-		}
+}
+.info-panel__messages{
+	opacity: 0;
+	padding: 10px 15px;
+
+	a{
+		padding: 15px;
+	}
+	&.show{
+		opacity: 1;
+		transition: .4s all;
 	}
 }
 
 
-
-// Misc Tasks Area
-// ====================
-.sidebar-container{
-	width: 200px;
-	padding: 0;
-	position: fixed;
-	z-index: 2;
-	background: rgb(53,53,53);
-	background-image: linear-gradient(#474849, #424244);
-	height: 100%;
-	color: #fff;
-
-
-	header{
-		padding: 14px;
-		border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-		box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.07);
-	}
-
-
-
-	.other-tasks-container{
-
-		.non-day{
-			border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-			border-top: 1px solid rgba(255, 255, 255, 0.05);
-
-
-			&:first-of-type{
-				border-top: none;
-			}
-
-			ul{
-				border-top: 1px solid rgba(0, 0, 0, 0.2);
-			}
-				
-				li{
-					background: rgb(60,60,60);
-					padding: 5px 20px;					
-				}
-					
-					.item-detail{
-						padding-bottom: 4px;
-						color: #ccc;
-						display: block;
-						border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-						padding-bottom: 10px;
-
-					}
-		}
-
-	}
-
-}
 
 
 
@@ -274,7 +215,7 @@ ul.sortable{
 // Daily Tasks Area
 // ====================
 
-.day{
+.task-column{
 	display: inline-block;
 	width: 300px;
 	margin-bottom: 20px;
@@ -285,7 +226,7 @@ ul.sortable{
 	padding-bottom: 15px;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
-	
+
 	ul{
 		li{
 			position: relative;
@@ -297,7 +238,7 @@ ul.sortable{
 			font-weight: 100;
 			list-style: none;
 
-			
+
 			&:first-child{
 				margin-top: 10px;
 			}

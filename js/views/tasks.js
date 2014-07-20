@@ -1,7 +1,11 @@
 (function() {
-  var DIRECTIVES, KEYCODES, cmp, week_view,
+  var DIRECTIVES, DOM, KEYCODES, cmp, week_view,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  DOM = {
+    messages: '.info-panel__messages'
+  };
 
   KEYCODES = {
     enter: 13,
@@ -151,13 +155,13 @@
     };
 
     Week_View.prototype.messageClear = function() {
-      return $('.messages').empty();
+      return $(DOM.messages).empty();
     };
 
     Week_View.prototype.messageUpdate = function(obj) {
       var html;
       html = "<a href='#' data-id='" + obj.id + "' data-action='" + obj.action + "'>" + obj.message + "</a>";
-      $('.messages').empty().append(html).addClass('show');
+      $(DOM.messages).empty().append(html).addClass('show');
       return delay(6000, (function(_this) {
         return function() {
           return _this.messageClear();
@@ -167,6 +171,7 @@
 
     Week_View.prototype.undoShow = function(id) {
       var obj;
+      console.log('showing for: ' + id);
       obj = {
         id: id,
         message: 'Undo',

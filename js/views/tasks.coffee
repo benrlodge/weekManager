@@ -1,4 +1,8 @@
 
+DOM = 
+	messages : '.info-panel__messages'
+
+
 KEYCODES =
 	enter 	: 13
 	esc 	: 27
@@ -39,7 +43,6 @@ class App.Week_View extends Backbone.View
 	initialize: ->
 		@collection.on('add', @render, this)
 		@collection.on('remove', @render, this)
-
 
 		@fetchStoredCollections()			
 		@virginCheck()
@@ -130,7 +133,7 @@ class App.Week_View extends Backbone.View
 	addTask: (obj) ->
 		dir = obj.directive
 		detail = obj.detail
-		obj.order = $(dir).find('li').length ## BETTER TO LOOK THIS UP DIRECTLY IN COLLECTION?? THIS SEEMS FASTER/EASIER?
+		obj.order = $(dir).find('li').length
 
 		newTask = tasks.create
 			target: obj.directive
@@ -161,14 +164,15 @@ class App.Week_View extends Backbone.View
 	## ====================================
 
 	messageClear: ->
-		$('.messages').empty()
+		$(DOM.messages).empty()
 
 	messageUpdate: (obj) ->
 		html = "<a href='#' data-id='#{obj.id}' data-action='#{obj.action}'>#{obj.message}</a>"
-		$('.messages').empty().append(html).addClass('show')
+		$(DOM.messages).empty().append(html).addClass('show')
 		delay 6000, => @messageClear() 
 
 	undoShow: (id) ->
+		console.log('showing for: ' + id)
 		obj = {
 			id: id
 			message: 'Undo'
@@ -259,10 +263,8 @@ class App.Week_View extends Backbone.View
 
 
 	keyUp: (key) ->
-
 		if updateTaskActive()
 			@hideUpdate() if key.keyCode is KEYCODES.esc
-
 
 		if key.keyCode is KEYCODES.esc and @searchStatus
 			@newTaskInputHide()
